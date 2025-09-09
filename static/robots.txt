@@ -1,3 +1,8 @@
-# allow crawling everything by default
+# /static/robots.txt
+
+# Permite tuturor crawler-elor web (precum Googlebot) să acceseze tot site-ul.
 User-agent: *
-Disallow:
+Allow: /
+
+# Specifică locația sitemap-ului tău. Asigură-te că domeniul este corect.
+Sitemap: https://domeniul-tau.ro/sitemap.xml

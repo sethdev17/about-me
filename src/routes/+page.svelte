@@ -1,22 +1,55 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { slide } from 'svelte/transition';
+  import ProjectCard from '$lib/components/ProjectCard.svelte';
 
-  // =============== SECȚIUNEA PENTRU TRADUCERE ===============
+  export let data;
+
+  // ===================================================================
+  // CONFIGURARE PENTRU META TAG-URI - Aici modifici datele principale
+  // ===================================================================
+  const siteConfig = {
+    url: "https://domeniul-tau.ro", // <-- IMPORTANT: Pune aici URL-ul final al site-ului!
+    author: "SethDev",
+    twitterHandle: "@usernameTau", // <-- Pune username-ul tău de Twitter (opțional)
+    socialPreviewImage: "/images/social-preview.jpg" // <-- Calea către imaginea de preview din folderul `static`
+  };
+  // ===================================================================
+
   const translations = {
     ro: {
-      title: 'Profilul Meu',
-      bio: `Salut! Sunt un dezvoltator la început de drum în vârstă de 19 ani, captivat de procesul de a transforma idei creative și unice la realitate prin intermediul liniilor de cod. Când nu sunt prins în lumea programării, administrez o comunitate mică pentru fanii de anime pe <a href="LINKUL_TAU_DE_INVITATIE_AICI" target="_blank" rel="noopener noreferrer" class="discord-link">Discord</a>.`,
+      title: 'SethDev | Despre Mine',
+      metaDescription: 'Portofoliu personal al lui SethDev, un dezvoltator de 19 ani pasionat de programare, JavaScript, Svelte și anime. Descoperă proiectele și parcursul meu în lumea codului.',
+      ageText: '19 Ani',
+      bio: `
+        <p>Salut! Sunt un dezvoltator la început de drum în vârstă de 19 ani, captivat de procesul de a transforma idei creative și unice la realitate prin intermediul liniilor de cod. Poate te întrebi, oare ce m-a făcut să mă captiveze acest domeniu?</p>
+        <p>Păi totul a început anul trecut, în 2024, pe Discord, când am început să mă intereseze cum sunt făcuți boții de pe această platformă. După ce am aflat prin ce mod sunt făcuți, cum funcționează și cum îi aduci la viață, m-am apucat și eu să-mi fac unul, numit <span style="color: #fff88b">Saber</span>, care a împlinit deja mai mult de un an.</p>
+        <p>Voiam să experimentez cât mai multe lucruri și să văd dacă pot să-i introduc multiple comenzi diferite, și a funcționat. După ce nu am mai avut idei de comenzi, m-am apucat să îi inventez minigame-uri să văd dacă chiar va ieși ceva interesant și chiar mi-a plăcut rezultatul.</p>
+        <p>Într-adevăr, la început nu prea înțelegeam multe lucruri și nu știam să înțeleg și să citesc erorile, dar prin repetiție, m-am obișnuit. După aproximativ 10 luni de lucrat numai cu botul, m-am gândit că ar trebui să mă interesez și de alte lucruri cum ar fi web-development, deci de prin aprilie 2025, tot încerc să învăț și să înțeleg cât mai bine JavaScript, CSS și HTML.</p>
+        <p>Deci doar simpla idee că pot crea orice îmi trece prin minte, gratis doar prin acumularea de experiență și cunoștințe m-a făcut să mă pasioneze acest domeniu. E adevărat că uneori toate aceste lucruri pot devenii obositoare la un moment dat, dar asta numai dacă nu-ți impui limite sănătoase să te poți relaxa, dacă ceva chiar îți place cu adevărat, nu renunți așa ușor, chiar de este greu. Renunți numai dacă ști clar că acel lucru nu este pentru tine.</p>
+        <p>De asemenea pe lângă toate aceste lucruri, când nu sunt prins în lumea programării, administrez o comunitate mică pentru fanii de anime pe <a href="https://discord.com/invite/7bkkg9a5ee" target="_blank" rel="noopener noreferrer" class="discord-link">Discord</a>.</p>
+      `,
       learningTitle: 'Limbajele pe care le învăț în prezent:',
+      projectsTitle: 'Proiectele mele',
       animeBio: `Că tot am menționat de anime-uri, am vizionat și încă vizionez destul de multe. Îmi plac mai mult decât filmele normale deoarece îmi transmit mult mai multe sentimente și experiențe. Ele mă pot face foarte ușor să râd, să plâng sau să mă facă să spun "wow, ce poveste nemaipomenită a avut această serie". Dacă sunteți interesați, puteți să-mi vizitați lista pe <a href="https://myanimelist.net/profile/Felix17" target="_blank" rel="noopener noreferrer" aria-label="Profilul meu MyAnimeList"><img src="/images/mal-icon.svg" alt="MyAnimeList Icon" class="mal-icon"></a>.`,
       topAnimeTitle: 'Top anime-uri preferate:',
       showMore: 'Vezi mai mult >>',
       showLess: '<< Vezi mai puțin'
     },
     en: {
-      title: 'My Profile',
-      bio: `Hey there! I'm a 19-year-old developer at the start of my journey, captivated by the process of turning creative and unique ideas into reality through lines of code. When I'm not lost in the world of code, I manage a small community for anime fans on <a href="LINKUL_TAU_DE_INVITATIE_AICI" target="_blank" rel="noopener noreferrer" class="discord-link">Discord</a>.`,
+      title: 'SethDev | About Me',
+      metaDescription: 'Personal portfolio of SethDev, a 19-year-old developer passionate about programming, JavaScript, Svelte, and anime. Discover my projects and my journey into the world of code.',
+      ageText: '19 Years',
+      bio: `
+        <p>Hey there! I'm a 19-year-old developer at the start of my journey, captivated by the process of turning creative and unique ideas into reality through lines of code. You might wonder, what got me hooked on this field?</p>
+        <p>Well, it all started last year in 2024 on Discord, when I became interested in how bots on this platform are made. After learning how they're created, how they work, and how to bring them to life, I decided to make my own, named <span style="color: #fff88b">Saber</span>, which has already turned more than a year old.</p>
+        <p>I wanted to experiment as much as possible and see if I could introduce multiple different commands, and it worked. After I no longer had ideas for commands, I started inventing minigames for it to see if something interesting would really come out and I really liked the result.</p>
+        <p>Indeed, at the beginning I didn't understand many things and I didn't know how to understand and read the errors, but through repetition, I got used to it. After about 10 months of working only with the bot, I thought I should get interested in other things like web-development, so since April 2025, I'm still trying to learn and understand JavaScript, CSS, and HTML as best as possible.</p>
+        <p>So the simple idea that I can create anything that comes to my mind, for free just by accumulating experience and knowledge, made me passionate about this field. It's true that sometimes all these things can become tiring at some point, but only if you don't impose healthy limits to relax. If you really like something, you don't give up so easily, even if it's hard. You only give up if you know for sure that thing is not for you.</p>
+        <p>Also, besides all these things, when I'm not caught up in the world of programming, I manage a small community for anime fans on <a href="https://discord.com/invite/7bkkg9a5ee" target="_blank" rel="noopener noreferrer" class="discord-link">Discord</a>.</p>
+      `,
       learningTitle: 'Languages I\'m currently learning:',
+      projectsTitle: 'My Projects',
       animeBio: `Since I mentioned anime, I've watched and still watch quite a few. I like them more than regular movies because they convey so much more emotion and experience. They can easily make me laugh, cry, or say "wow, what an amazing story this series had." If you're interested, you can visit my list on <a href="https://myanimelist.net/profile/Felix17" target="_blank" rel="noopener noreferrer" aria-label="My MyAnimeList Profile"><img src="/images/mal-icon.svg" alt="MyAnimeList Icon" class="mal-icon"></a>.`,
       topAnimeTitle: 'Top favorite anime:',
       showMore: 'Show more >>',
@@ -26,14 +59,14 @@
 
   let lang = 'ro';
   let t = translations[lang];
+  let isTouchDevice = false;
 
-  onMount(() => {
-    const browserLang = navigator.language.split('-')[0];
-    if (translations[browserLang]) {
-      lang = browserLang;
+  function setLanguage(newLang) {
+    if (translations[newLang]) {
+      lang = newLang;
       t = translations[lang];
     }
-  });
+  }
 
   const languages = [
     { name: 'JavaScript', color: '#f1e05a', icon: '⚡', docUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript' },
@@ -41,59 +74,101 @@
     { name: 'HTML', color: '#e34f26', icon: '📄', docUrl: 'https://developer.mozilla.org/en-US/docs/Web/HTML' }
   ];
 
-  const topAnime = [
-    { title: 'Steins;Gate', url: 'https://myanimelist.net/anime/9253/Steins_Gate' },
-    { title: 'Date A Live', url: 'https://myanimelist.net/anime/15583/Date_A_Live' },
-    { title: 'Satsuriku no Tenshi', url: 'https://myanimelist.net/anime/35994/Satsuriku_no_Tenshi' },
-    { title: 'Initial D First Stage', url: 'https://myanimelist.net/anime/185/Initial_D_First_Stage' },
-    { title: 'The Promised Neverland', url: 'https://myanimelist.net/anime/37779/Yakusoku_no_Neverland' },
-    { title: 'Code Geass: Lelouch of the Rebellion', url: 'https://myanimelist.net/anime/1575/Code_Geass__Hangyaku_no_Lelouch' },
-    { title: 'Hunter x Hunter (2011)', url: 'https://myanimelist.net/anime/11061/Hunter_x_Hunter_2011' },
-    { title: 'Hellsing Ultimate', url: 'https://myanimelist.net/anime/777/Hellsing_Ultimate' },
-    { title: 'Darling in the FranXX', url: 'https://myanimelist.net/anime/35849/Darling_in_the_FranXX' },
-    { title: 'K-On!', url: 'https://myanimelist.net/anime/5680/K-On' },
-    { title: 'Chuunibyou demo Koi ga Shitai!', url: 'https://myanimelist.net/anime/14741/Chuunibyou_demo_Koi_ga_Shitai' },
-    { title: 'Grand Blue', url: 'https://myanimelist.net/anime/37105/Grand_Blue' },
-    { title: 'Toradora!', url: 'https://myanimelist.net/anime/4224/Toradora' },
-    { title: 'Rascal Does Not Dream of Bunny Girl Senpai', url: 'https://myanimelist.net/anime/37450/Seishun_Buta_Yarou_wa_Bunny_Girl_Senpai_no_Yume_wo_Minai' },
-    { title: 'Fate/stay night', url: 'https://myanimelist.net/anime/356/Fate_stay_night' },
-    { title: 'Fate/Apocrypha', url: 'https://myanimelist.net/anime/34662/Fate_Apocrypha' },
-    { title: 'Fate/Zero', url: 'https://myanimelist.net/anime/10087/Fate_Zero' },
-    { title: 'KonoSuba', url: 'https://myanimelist.net/anime/30831/Kono_Subarashii_Sekai_ni_Shukufuku_wo' },
-    { title: 'Classroom of the Elite', url: 'https://myanimelist.net/anime/35507/Youkoso_Jitsuryoku_Shijou_Shugi_no_Kyoushitsu_e' },
-    { title: 'Angel Beats!', url: 'https://myanimelist.net/anime/6547/Angel_Beats' },
-    { title: 'Golden Time', url: 'https://myanimelist.net/anime/17895/Golden_Time' },
-    { title: 'Food Wars! Shokugeki no Soma', url: 'https://myanimelist.net/anime/28171/Shokugeki_no_Souma' },
-    { title: 'Erased', url: 'https://myanimelist.net/anime/31043/Boku_dake_ga_Inai_Machi' },
-    { title: 'Bungou Stray Dogs', url: 'https://myanimelist.net/anime/31478/Bungou_Stray_Dogs' },
-    { title: 'Another', url: 'https://myanimelist.net/anime/11111/Another' },
-    { title: 'Sword Art Online', url: 'https://myanimelist.net/anime/11757/Sword_Art_Online' },
-    { title: 'My Teen Romantic Comedy SNAFU', url: 'https://myanimelist.net/anime/14813/Yahari_Ore_no_Seishun_Love_Comedy_wa_Machigatteiru' },
-    { title: 'Parasyte -the maxim-', url: 'https://myanimelist.net/anime/22535/Kiseijuu__Sei_no_Kakuritsu' },
-    { title: 'Plastic Memories', url: 'https://myanimelist.net/anime/27775/Plastic_Memories' },
-    { title: 'One-Punch Man', url: 'https://myanimelist.net/anime/30276/One_Punch_Man' },
-    { title: 'Violet Evergarden', url: 'https://myanimelist.net/anime/33352/Violet_Evergarden' },
-    { title: 'Re:ZERO -Starting Life in Another World-', url: 'https://myanimelist.net/anime/31240/Re_Zero_kara_Hajimeru_Isekai_Seikatsu' },
-    { title: 'Dororo', url: 'https://myanimelist.net/anime/37520/Dororo' },
-    { title: 'Kaguya-sama: Love is War', url: 'https://myanimelist.net/anime/37999/Kaguya-sama_wa_Kokurasetai__Tensai-tachi_no_Renai_Zunousen' },
-    { title: 'The Tunnel to Summer, the Exit of Goodbyes', url: 'https://myanimelist.net/anime/50593/Natsu_e_no_Tunnel_Sayonara_no_Deguchi' },
-    { title: 'The Ancient Magus\' Bride', url: 'https://myanimelist.net/anime/35062/Mahoutsukai_no_Yome' },
-    { title: 'Berserk (1997)', url: 'https://myanimelist.net/anime/33/Kenpuu_Denki_Berserk' },
-    { title: 'Dusk Maiden of Amnesia', url: 'https://myanimelist.net/anime/12445/Tasogare_Otome_x_Amnesia' },
-    { title: 'Nisekoi', url: 'https://myanimelist.net/anime/18897/Nisekoi' },
-    { title: 'Charlotte', url: 'https://myanimelist.net/anime/28999/Charlotte' },
-    { title: 'Noragami', url: 'https://myanimelist.net/anime/20507/Noragami' },
-    { title: 'TONIKAWA: Over The Moon For You', url: 'https://myanimelist.net/anime/41389/Tonikaku_Kawaii' },
-    { title: '86 EIGHTY-SIX', url: 'https://myanimelist.net/anime/41457/86' }
-  ];
-
-  // Logică pentru a afișa/ascunde lista de anime-uri
   let showAllAnime = false;
   const initialVisibleCount = 5;
+
+  let emailCopied = false;
+  const myEmail = 'gg079331@gmail.com';
+
+  function copyEmail() {
+    navigator.clipboard.writeText(myEmail).then(() => {
+      emailCopied = true;
+      setTimeout(() => { emailCopied = false; }, 2500);
+    });
+  }
+
+  let animationState = 0;
+  let animationTimeout;
+
+  const animationSequence = () => {
+    animationState = 1;
+    animationTimeout = setTimeout(() => {
+      animationState = 0;
+      animationTimeout = setTimeout(() => {
+        animationState = 2;
+        animationTimeout = setTimeout(() => {
+          animationState = 0;
+          animationTimeout = setTimeout(animationSequence, 2500);
+        }, 2000);
+      }, 2500);
+    }, 2000);
+  };
+
+  onMount(() => {
+    const browserLang = navigator.language.split('-')[0];
+    setLanguage(browserLang);
+    isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    animationTimeout = setTimeout(animationSequence, 3000);
+  });
+
+  onDestroy(() => {
+    clearTimeout(animationTimeout);
+  });
+
 </script>
 
 <svelte:head>
   <title>{t.title}</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1d4ed8">
+  
+  <meta name="description" content={t.metaDescription}>
+  <meta name="keywords" content="sethdev, dezvoltator, programator, portofoliu, javascript, svelte, css, html, anime, web developer">
+  <meta name="author" content={siteConfig.author}>
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href={siteConfig.url}>
+  
+  <meta property="og:title" content={t.title}>
+  <meta property="og:description" content={t.metaDescription}>
+  <meta property="og:type" content="profile">
+  <meta property="profile:username" content="sethdev17">
+  <meta property="og:url" content={siteConfig.url}>
+  <meta property="og:site_name" content={t.title}>
+  <meta property="og:image" content={`${siteConfig.url}${siteConfig.socialPreviewImage}`}>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Previzualizare a portofoliului lui SethDev">
+  <meta property="og:locale" content={lang === 'ro' ? 'ro_RO' : 'en_US'}>
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={t.title}>
+  <meta name="twitter:description" content={t.metaDescription}>
+  <meta name="twitter:image" content={`${siteConfig.url}${siteConfig.socialPreviewImage}`}>
+  {#if siteConfig.twitterHandle}
+    <meta name="twitter:creator" content={siteConfig.twitterHandle}>
+    <meta name="twitter:site" content={siteConfig.twitterHandle}>
+  {/if}
+
+  {@html `
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "name": "${siteConfig.author}",
+      "url": "${siteConfig.url}",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "${siteConfig.author}",
+        "alternateName": "SethDev",
+        "jobTitle": "Web Developer",
+        "url": "${siteConfig.url}",
+        "image": "${siteConfig.url}/images/profil.jpg"
+      }
+    }
+    </script>
+  `}
 </svelte:head>
 
 <div class="container">
@@ -101,15 +176,49 @@
 
   <main class="profile-card">
     <div class="main-content">
-      <img src="/images/profil.jpg" alt="Poza mea de profil" class="profile-picture">
+      <div class="pfp-container">
+        <img 
+          src="/images/profil.jpg" 
+          alt="Poza mea de profil" 
+          class="profile-picture"
+          class:slide-left={animationState !== 0}
+        >
+        <div class="animated-content-wrapper">
+          <div 
+            class="animated-text"
+            class:visible={animationState === 1}
+            data-text="SethDev"
+          >
+            SethDev
+          </div>
+          
+          <div 
+            class="animated-text"
+            class:visible={animationState === 2}
+            data-text={t.ageText}
+          >
+            {t.ageText}
+          </div>
+          
+          <div class="fire-trail" class:active={animationState !== 0} key={animationState}></div>
+        </div>
+      </div>
       <div class="text-block">
-        <p>{@html t.bio}</p>
+        {@html t.bio}
       </div>
     </div>
 
     <div class="social-links">
       <a href="https://github.com/sethdev17" target="_blank" rel="noopener noreferrer" aria-label="Profilul meu de GitHub"><img src="/images/github.svg" alt="GitHub Icon"></a>
       <a href="https://discord.com/users/602431963688730624" target="_blank" rel="noopener noreferrer" aria-label="Contacteaza-ma pe Discord"><img src="/images/discord.svg" alt="Discord Icon"></a>
+      {#if isTouchDevice}
+        <a href="mailto:{myEmail}" aria-label="Trimite un email"><img src="/images/email.svg" alt="Email Icon"></a>
+      {:else}
+        <button on:click={copyEmail} aria-label="Copiaza adresa de email">
+          {#if emailCopied}<span>✓ Copiat!</span>{:else}<img src="/images/email.svg" alt="Email Icon">{/if}
+        </button>
+      {/if}
+      <a href="https://www.instagram.com/19.decembrie_" target="_blank" rel="noopener noreferrer" aria-label="Profilul meu de Instagram"><img src="/images/instagram.svg" alt="Instagram Icon"></a>
     </div>
 
     <div class="languages-section">
@@ -119,17 +228,23 @@
           <a href={language.docUrl} target="_blank" rel="noopener noreferrer" class="language-link">
             <div class="language-card" style="--glow-color: {language.color}">
               <div class="language-icon">{language.icon}</div>
-              <div class="language-info">
-                <div class="language-name-row">
-                  <div class="language-dot" style="background-color: {language.color}"></div>
-                  <h3>{language.name}</h3>
-                </div>
-              </div>
+              <div class="language-info"><div class="language-name-row"><div class="language-dot" style="background-color: {language.color}"></div><h3>{language.name}</h3></div></div>
             </div>
           </a>
         {/each}
       </div>
     </div>
+
+    {#if data.projects && data.projects.length > 0}
+      <div class="projects-section">
+        <h2>{t.projectsTitle}</h2>
+        <div class="projects-grid">
+          {#each data.projects as project (project.id)}
+            <ProjectCard {project} {lang}/>
+          {/each}
+        </div>
+      </div>
+    {/if}
 
     <div class="anime-section">
       <p>{@html t.animeBio}</p>
@@ -138,13 +253,27 @@
     <div class="top-anime-section">
       <h2>{t.topAnimeTitle}</h2>
       <ol class="top-anime-list">
-        {#each topAnime.slice(0, initialVisibleCount) as anime}
-          <li><a href={anime.url} target="_blank" rel="noopener noreferrer">{anime.title}</a></li>
+        {#each data.anime.slice(0, initialVisibleCount) as anime}
+          <li>
+            <a href={anime.url} target="_blank" rel="noopener noreferrer">
+              {anime.title}
+              {#if anime.imageUrl && !isTouchDevice}
+                <img src={anime.imageUrl} alt="Coperta {anime.title}" class="anime-thumbnail"/>
+              {/if}
+            </a>
+          </li>
         {/each}
         
         {#if showAllAnime}
-          {#each topAnime.slice(initialVisibleCount) as anime (anime.title)}
-            <li transition:slide|local><a href={anime.url} target="_blank" rel="noopener noreferrer">{anime.title}</a></li>
+          {#each data.anime.slice(initialVisibleCount) as anime (anime.title)}
+            <li transition:slide|local>
+              <a href={anime.url} target="_blank" rel="noopener noreferrer">
+                {anime.title}
+                {#if anime.imageUrl && !isTouchDevice}
+                  <img src={anime.imageUrl} alt="Coperta {anime.title}" class="anime-thumbnail"/>
+                {/if}
+              </a>
+            </li>
           {/each}
         {/if}
       </ol>
@@ -157,186 +286,60 @@
 </div>
 
 <style>
-  :global(body) {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    color: #f0f0f0;
-    background-color: #000000;
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
-
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 4rem 1rem;
-    position: relative;
-    z-index: 1;
-    box-sizing: border-box;
-  }
+  :global(body){margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;color:#f0f0f0;background-color:#000;overflow-y:scroll;overflow-x:hidden}
+  .container{display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:4rem 1rem;position:relative;z-index:1;box-sizing:border-box}
+  .container::before{content:'';position:fixed;top:50%;left:50%;width:900px;height:900px;background-image:radial-gradient(circle,rgba(29,78,216,.25) 0,rgba(0,0,0,0) 55%);transform:translate(-50%,-50%);z-index:-2}
+  .background-effects{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:-1}
+  .background-effects::before{content:'';position:absolute;width:6px;height:6px;background:#e0eaff;border-radius:50%;box-shadow:0 0 15px 4px #a7c8ff,0 0 25px 10px #60a5fa,0 0 50px 20px rgba(29,78,216,.5);animation:core-pulse 4s infinite ease-in-out}
+  @keyframes core-pulse{0%,100%{transform:scale(.9);opacity:.8}50%{transform:scale(1.1);opacity:1}}
+  .profile-card{display:flex;flex-direction:column;align-items:center;gap:2.5rem;max-width:600px;width:100%}
   
-  /* EFECT DE FUNDAL - DOAR NUCLEUL ANIMAT */
-  .container::before {
-    content: '';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 900px;
-    height: 900px;
-    background-image: radial-gradient(circle, rgba(29, 78, 216, 0.25) 0%, rgba(0, 0, 0, 0) 55%);
-    transform: translate(-50%, -50%);
-    z-index: -2;
-  }
+  .main-content{display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%}
+  .pfp-container {position: relative;width: 120px;height: 120px;flex-shrink: 0;display: flex;justify-content: center;align-items: center;}
+  .profile-picture {width: 100%;height: 100%;border-radius: 50%;object-fit: cover;position: relative;z-index: 10;transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);}
+  .profile-picture.slide-left {transform: translateX(-160px);}
+  .animated-content-wrapper {position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);width: 180px;height: 100%;display: flex;justify-content: center;align-items: center;}
+  .animated-text {position: absolute;font-size: 1.8rem;font-weight: bold;white-space: nowrap;color: transparent;opacity: 0;transform: translateY(10px);transition: opacity 0.4s ease-out, transform 0.4s ease-out;}
+  .animated-text.visible {opacity: 1;transform: translateY(0);background: linear-gradient(90deg, #ffffff 0%, #a7c8ff 50%, #dbeafe 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;background-clip: text;text-fill-color: transparent;}
+  .animated-text::after {content: attr(data-text);position: absolute;left: 0;top: 0;z-index: -1;background: linear-gradient(90deg, #dbeafe 0%, #3b82f6 50%, #a7c8ff 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;background-clip: text;text-fill-color: transparent;filter: blur(10px);}
+  .fire-trail {position: absolute;bottom: 25%;left: 0;width: 100%;height: 2px;background: linear-gradient(90deg, transparent, #dbeafe, #60a5fa, #dbeafe, transparent);box-shadow: 0 0 8px 1px #a7c8ff, 0 0 15px 2px #3b82f6;border-radius: 2px;transform: scaleX(0);opacity: 0;transform-origin: right;transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1);}
+  .fire-trail.active {animation: draw-in 0.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;}
+  @keyframes draw-in {from {transform-origin: left;transform: scaleX(0);opacity: 0;} to {transform-origin: left;transform: scaleX(1);opacity: 1;}}
   
-  .background-effects {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-  }
-
-  .background-effects::before {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #e0eaff;
-    border-radius: 50%;
-    box-shadow: 0 0 15px 4px #a7c8ff, 0 0 25px 10px #60a5fa, 0 0 50px 20px rgba(29, 78, 216, 0.5);
-    animation: core-pulse 4s infinite ease-in-out;
-  }
-
-  @keyframes core-pulse {
-    0%, 100% { transform: scale(0.9); opacity: 0.8; }
-    50% { transform: scale(1.1); opacity: 1; }
-  }
+  .text-block{background-color:rgba(25,25,30,.5);padding:1.2rem 1.5rem;border-radius:16px;width:100%;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+  .text-block p{margin:0 0 1rem;line-height:1.7;font-size:.95rem;text-align:left}
+  .text-block p:last-child{margin-bottom:0}
+  :global(.discord-link){color:#7289DA;font-weight:600;text-decoration:none;transition:all .2s ease-in-out;border-bottom:2px solid transparent}
+  :global(.discord-link:hover){color:#99aab5;border-bottom-color:#99aab5}
+  .social-links{display:flex;gap:2.5rem}
+  .social-links a,.social-links button{position:relative;display:flex;justify-content:center;align-items:center;width:48px;height:48px;transition:transform .3s cubic-bezier(.4,0,.2,1);background:0 0;border:none;padding:0;cursor:pointer;font-family:inherit;border-radius:50%}
+  .social-links a::before,.social-links button::before{content:'';position:absolute;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(150,200,255,.3) 0,rgba(29,78,216,.2) 50%,transparent 70%);box-shadow:0 0 15px rgba(29,78,216,.5),inset 0 0 10px rgba(255,255,255,.2);animation:water-bubble 3s ease-in-out infinite;z-index:-1}
+  .social-links a::after,.social-links button::after{content:'';position:absolute;width:60px;height:60px;border-radius:50%;border:1px solid rgba(150,200,255,.3);animation:ripple 2s ease-out infinite;opacity:0;z-index:-2}
+  .social-links a img,.social-links button img{width:28px;height:28px;filter:brightness(0) invert(1);transition:filter .3s ease-out,transform .3s cubic-bezier(.4,0,.2,1)}
+  .social-links a:hover,.social-links button:hover{transform:translateY(-3px) scale(1.1)}
+  .social-links a:hover::before,.social-links button:hover::before{animation:water-bubble-hover 1.5s cubic-bezier(.4,0,.2,1) infinite}
+  .social-links a:hover::after,.social-links button:hover::after{animation:ripple-hover 1.5s ease-out infinite;opacity:.5}
+  .social-links a:hover img,.social-links button:hover img{filter:brightness(0) invert(1) drop-shadow(0 0 6px hsla(0,0%,100%,.9))}
+  .social-links button span{color:#a7c8ff;font-size:.75rem;font-weight:600;white-space:nowrap}
+  @keyframes water-bubble{0%,100%{transform:scale(1) translateY(0);opacity:.8}50%{transform:scale(1.05) translateY(-2px);opacity:1}}
+  @keyframes water-bubble-hover{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.9}}
+  @keyframes ripple{0%,100%{transform:scale(1);opacity:.3}100%{transform:scale(1.5);opacity:0}}
+  @keyframes ripple-hover{0%,100%{transform:scale(1);opacity:.5}100%{transform:scale(1.6);opacity:0}}
   
-  .profile-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2.5rem;
-    max-width: 600px;
-    width: 100%;
-  }
+  .languages-section{width:100%;max-width:600px}
+  .languages-section h2{text-align:left;margin-bottom:2rem;font-size:1.2rem;color:#f0f0f0}
+  .languages-grid{display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:center} /* Centrat cardurile */
+  .language-link{text-decoration:none;color:inherit}
 
-  .main-content {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    width: 100%;
-  }
-
-  .profile-picture {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  .text-block {
-    background-color: rgba(25, 25, 30, 0.5);
-    padding: 1.2rem 1.5rem;
+  /* MODIFICARE: Stil unitar pentru cardurile de limbaje */
+  .language-card{
+    background-color: rgba(25, 25, 30, .5);
+    border: 1px solid rgba(255, 255, 255, .15);
     border-radius: 16px;
-    width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-  
-  .text-block p {
-    margin: 0;
-    line-height: 1.7;
-    font-size: 0.95rem;
-  }
-
-  :global(.discord-link) {
-    color: #7289DA;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease-in-out;
-    border-bottom: 2px solid transparent;
-  }
-
-  :global(.discord-link:hover) {
-    color: #99aab5;
-    border-bottom-color: #99aab5;
-  }
-
-  .social-links {
-    display: flex;
-    gap: 2.5rem;
-  }
-  .social-links a {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s ease-in-out;
-  }
-  .social-links a::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: conic-gradient(
-      from 90deg,
-      transparent 0%,
-      #60a5fa 10%,
-      #3b82f6 20%,
-      transparent 30%
-    );
-    -webkit-mask: radial-gradient(transparent 21px, white 22px);
-            mask: radial-gradient(transparent 21px, white 22px);
-    animation: spin-animation 4s linear infinite;
-  }
-  .social-links a img {
-    width: 32px;
-    height: 32px;
-    filter: brightness(0) invert(1);
-  }
-  .social-links a:hover {
-    transform: scale(1.15);
-  }
-  @keyframes spin-animation {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  /* SECȚIUNEA LIMBAJE */
-  .languages-section {
-    width: 100%;
-    max-width: 600px;
-  }
-  .languages-section h2 {
-    text-align: left;
-    margin-bottom: 2rem;
-    font-size: 1.2rem;
-    color: #f0f0f0;
-  }
-  .languages-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: flex-start;
-  }
-  .language-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  .language-card {
-    background-color: rgba(20, 20, 20, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
     padding: 1.2rem 1rem;
-    transition: all 0.3s ease-in-out;
-    backdrop-filter: blur(10px);
+    transition: all .3s ease-in-out;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -345,183 +348,62 @@
     position: relative;
     overflow: hidden;
   }
-  .language-card::after {
-    content: '';
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 70%;
-    background: linear-gradient(to top, hsla(from var(--glow-color) h s l / 0.4), transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease-out;
-  }
-  .language-icon,
-  .language-info {
-    position: relative;
-    z-index: 1;
-  }
-  .language-card:hover {
-    transform: translateY(-5px);
-    border-color: hsla(from var(--glow-color) h s l / 0.5);
-  }
-  .language-card:hover::after {
-    opacity: 1;
-  }
-  .language-icon {
-    font-size: 2.2rem;
-    margin-bottom: 0.8rem;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
-  }
-  .language-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  .language-name-row {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-  .language-info h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #f0f0f0;
-    font-weight: 600;
-  }
-  .language-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-  }
 
-  /* SECȚIUNILE ANIME */
-  .anime-section, .top-anime-section {
-    width: 100%;
-    max-width: 600px;
-    background-color: rgba(25, 25, 30, 0.5);
-    padding: 1.2rem 1.8rem;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  }
-  .anime-section p {
-    margin: 0;
-    line-height: 1.7;
-    text-align: left;
-    font-size: 0.95rem;
-  }
-  :global(.mal-icon) {
-    width: 18px;
-    height: 18px;
-    vertical-align: middle;
-    margin: 0 4px;
-    transition: transform 0.2s ease-out;
-    filter: brightness(0) invert(1);
-  }
-  :global(.mal-icon:hover) {
-    transform: scale(1.2);
-  }
-  .top-anime-section h2 {
-    text-align: left;
-    margin: 0 0 1.5rem 0;
-    font-size: 1.2rem;
-    color: #f0f0f0;
-  }
-  .top-anime-list {
-    list-style: decimal;
-    margin: 0;
-    padding-left: 2.5rem; /* Creștem padding-ul pentru a acomoda numere cu două cifre */
-    overflow: visible; /* Asigurăm că numerele nu sunt tăiate */
-  }
-  .top-anime-list li {
-    margin-bottom: 0.8rem;
-    font-size: 0.95rem;
-    padding-left: 0.5rem; /* Adăugăm un mic padding pentru a separa textul de număr */
-  }
-  .top-anime-list li:last-child {
-    margin-bottom: 0;
-  }
-  .top-anime-list a {
-    color: #c7c7c7;
-    text-decoration: none;
-    transition: color 0.2s ease-out;
-  }
-  .top-anime-list a:hover {
-    color: #ffffff;
-  }
-  .toggle-list-button {
-    background: none;
-    border: none;
-    color: #60a5fa;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    padding: 0;
-    margin-top: 1rem;
-    transition: color 0.2s ease-out;
-  }
-  .toggle-list-button:hover {
-    color: #a7c8ff;
-  }
-
-  /* Responsive Design */
-  @media (max-width: 600px) {
-    .container {
-      padding: 2.5rem 1rem;
-    }
-    .main-content {
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    .profile-picture {
-      width: 100px;
-      height: 100px;
-    }
-    .text-block p, .anime-section p {
-      text-align: center;
-      font-size: 0.9rem;
-    }
-    .languages-section h2, .top-anime-section h2 {
-      text-align: center;
-      font-size: 1.3rem;
-    }
-    .languages-grid {
-      justify-content: center;
-      gap: 1rem;
-    }
-    .language-card {
-      min-width: 120px;
-      padding: 1rem 0.8rem;
-    }
-    .language-icon {
-      font-size: 1.8rem;
-      margin-bottom: 0.6rem;
-    }
-    .language-info h3 {
-      font-size: 1rem;
-    }
-    .language-dot {
-      width: 10px;
-      height: 10px;
-    }
-    .language-name-row {
-      gap: 0.5rem;
-    }
-    .top-anime-list {
-      padding-left: 2rem; /* Ajustăm padding-ul pentru mobil */
-    }
-    .top-anime-list li {
-      font-size: 0.9rem;
-    }
+  .language-card::after{content:'';position:absolute;z-index:0;bottom:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 120%,hsla(from var(--glow-color) h s l/.35) 0,transparent 60%);opacity:0;transition:opacity .4s ease-out}
+  .language-icon,.language-info{position:relative;z-index:1}
+  .language-card:hover{transform:translateY(-5px);border-color:hsla(from var(--glow-color) h s l/.5)}
+  .language-card:hover::after{opacity:1}
+  .language-icon{font-size:2.2rem;margin-bottom:.8rem;filter:drop-shadow(0 0 8px rgba(255,255,255,.2));animation:float 3s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .language-info{display:flex;flex-direction:column;align-items:center;width:100%}
+  .language-name-row{display:flex;align-items:center;gap:.6rem}
+  .language-info h3{margin:0;font-size:1.1rem;color:#f0f0f0;font-weight:600}
+  .language-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 10px rgba(255,255,255,.3)}
+  .projects-section{width:100%;max-width:600px}
+  .projects-section h2{text-align:left;margin-bottom:2rem;font-size:1.2rem;color:#f0f0f0}
+  .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+  .anime-section,.top-anime-section{width:100%;max-width:600px;background-color:rgba(25,25,30,.5);padding:1.2rem 1.8rem;border-radius:16px;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+  .anime-section p{margin:0;line-height:1.7;text-align:left;font-size:.95rem}
+  :global(.mal-icon){width:18px;height:18px;vertical-align:middle;margin:0 4px;transition:transform .2s ease-out;filter:brightness(0) invert(1)}
+  :global(.mal-icon:hover){transform:scale(1.2)}
+  .top-anime-section h2{text-align:left;margin:0 0 1.5rem;font-size:1.2rem;color:#f0f0f0}
+  .top-anime-list{list-style:decimal;margin:0;padding-left:1.8rem;overflow:visible}
+  .top-anime-list li{position:relative;margin-bottom:.8rem;padding-left:.5rem}
+  .top-anime-list a{color:#c7c7c7;text-decoration:none;transition:color .2s ease-out;font-size:.95rem;display:block}
+  .top-anime-list a:hover{color:#fff}
+  .anime-thumbnail{position:absolute;right:105%;top:50%;transform:translateY(-50%) scale(.8);margin-right:2.4rem;width:120px;height:170px;object-fit:cover;border-radius:6px;border:2px solid rgba(255,255,255,.3);box-shadow:0 5px 20px rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .2s ease-out,transform .2s ease-out,visibility .2s;pointer-events:none;z-index:10}
+  .top-anime-list li:hover .anime-thumbnail{opacity:1;visibility:visible;transform:translateY(-50%) scale(1)}
+  .toggle-list-button{background:0 0;border:none;color:#60a5fa;cursor:pointer;font-size:.9rem;font-weight:600;padding:0;margin-top:1rem;transition:color .2s ease-out}
+  .toggle-list-button:hover{color:#a7c8ff}
+  
+  @media (max-width: 767px){
+    .container{padding:2.5rem 1.5rem}
+    .profile-card{gap:1.8rem;max-width:100%}
+    .main-content{gap:1rem}
+    .pfp-container {width: 80px;height: 80px;}
+    .profile-picture.slide-left {transform: translateX(-110px);}
+    .animated-content-wrapper {width: 140px;}
+    .animated-text {font-size: 1.3rem;}
+    .animated-text::after {filter: blur(8px);}
+    .text-block,.anime-section,.top-anime-section{padding:1.2rem;border-radius:14px}
+    .text-block p,.anime-section p{font-size:.875rem;line-height:1.6}
+    .top-anime-list li,.top-anime-list a{font-size:.875rem}
+    .top-anime-list li{padding-left:.2rem;margin-bottom:.5rem}
+    .top-anime-list{padding-left:1.4rem}
+    .social-links{gap:1.8rem}
+    .social-links a,.social-links button{width:40px;height:40px}
+    .social-links a img,.social-links button img{width:22px;height:22px}
+    .social-links a::after,.social-links button::after{width:50px;height:50px}
+    .languages-section h2,.top-anime-section h2,.projects-section h2{font-size:1.05rem;margin-bottom:1.2rem;text-align:center}
+    .languages-grid{gap:.8rem;justify-content:center}
+    .language-card{min-width:100px;max-width:120px;padding:.8rem}
+    .language-icon{font-size:1.7rem}
+    .language-info h3{font-size:.9rem}
+    .language-dot{width:8px;height:8px}
+    .projects-grid{grid-template-columns:1fr;gap:1rem}
+    .toggle-list-button{font-size:.8rem;margin-top:.8rem}
+    .container::before{width:350px;height:350px;background-image:radial-gradient(circle,rgba(29,78,216,.2) 0,rgba(0,0,0,0) 65%)}
+    .background-effects::before{width:4px;height:4px;box-shadow:0 0 8px 2px #a7c8ff,0 0 15px 6px #60a5fa}
+    .anime-thumbnail{display:none}
   }
 </style>
