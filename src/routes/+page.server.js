@@ -54,44 +54,55 @@ const topAnime = [
 
 /** @param {typeof fetch} fetchFunc */
 async function getGithubProjects(fetchFunc) {
+
+  // ==================== BLOC DE DEBUGGING ====================
+  // Acesta va afișa în log-ul de build de pe Cloudflare dacă token-ul este vizibil
+  console.log('--- Verificare GITHUB_TOKEN ---');
+  if (GITHUB_TOKEN && GITHUB_TOKEN.startsWith('ghp_')) {
+    console.log('SUCCESS: GITHUB_TOKEN a fost găsit și pare valid.');
+    console.log('Lungimea token-ului:', GITHUB_TOKEN.length);
+  } else if (GITHUB_TOKEN) {
+    console.log('EROARE: GITHUB_TOKEN există, dar este INVALID (nu începe cu ghp_).');
+  } else {
+    console.log('EROARE CRITICĂ: GITHUB_TOKEN nu a fost găsit în mediul de build!');
+  }
+  console.log('------------------------------');
+  // =========================================================
+
   try {
     const headers = {
-      // Adăugăm header-ul de autorizare pentru a folosi token-ul
       'Authorization': `token ${GITHUB_TOKEN}`
     };
     
-    // Cerem repository-urile sortate după data ultimului push
     const reposRes = await fetchFunc(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`, { headers });
     
     if (!reposRes.ok) {
-        throw new Error(`GitHub API returned status ${reposRes.status}`);
+        throw new Error(`GitHub API a returnat status ${reposRes.status}`);
     }
 
     const allRepos = await reposRes.json();
     
     const filteredRepos = allRepos
       .filter(repo => !repo.fork && repo.description)
-      .slice(0, 8); // Luăm doar primele 8 cele mai recente proiecte
+      .slice(0, 8);
 
-    // Reactivăm Promise.all pentru a prelua limbajele pentru fiecare repo
     const reposWithLanguages = await Promise.all(
       filteredRepos.map(async (repo) => {
-        // Nu facem cerere dacă nu există URL-ul pentru limbaje
         if (!repo.languages_url) {
           return { ...repo, languages: {} };
         }
         const langRes = await fetchFunc(repo.languages_url, { headers });
         const languagesData = langRes.ok ? await langRes.json() : {};
-        // Acum adăugăm proprietatea `languages` la obiectul repo
         return { ...repo, languages: languagesData }; 
       })
     );
     
+    console.log(`Am preluat cu succes ${reposWithLanguages.length} proiecte de pe GitHub.`);
     return reposWithLanguages;
 
   } catch (error) {
     console.error('Eroare la preluarea proiectelor GitHub:', error);
-    return []; // Returnează un array gol în caz de eroare
+    return [];
   }
 }
 
@@ -110,6 +121,5 @@ export async function load({ fetch }) {
     getAnimeData()
   ]);
 
-  // Acum obiectul `projects` va conține datele despre limbaje de care `ProjectCard` are nevoie
   return { projects, anime };
 }
