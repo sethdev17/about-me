@@ -1,13 +1,10 @@
 # SethDev - Personal Portfolio
 
-This is the source code for my personal portfolio, an interactive and animated single-page website built with SvelteKit. It was designed to be my digital business card, showcasing my front-end development skills, projects, and interests.
+This is the source code for my personal portfolio, an interactive and animated single-page website built with [**SvelteKit**](https://kit.svelte.dev/). It was designed to be my digital business card, showcasing my front-end development skills, projects, and interests.
 
 ### [➡️ View Live Demo](https://your-domain.com) <!-- << ADD YOUR FINAL URL HERE! -->
 
 ---
-
-
-*(Tip: You can record a short GIF of the animation using a tool like [ScreenToGif](https://www.screentogif.com/) or [LICEcap](https://www.cockos.com/licecap/), upload it to a service like Imgur, and then replace the link above.)*
 
 ## ✨ Key Features
 
@@ -21,7 +18,7 @@ This is the source code for my personal portfolio, an interactive and animated s
 ## 🚀 Tech Stack
 
 - **Framework**: [**SvelteKit**](https://kit.svelte.dev/)
-- **Styling**: **Pure CSS** (with modern features like Flexbox, Grid, and CSS Variables)
+- **Styling**: **[Pure CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)** (with modern features like Flexbox, Grid, and CSS Variables)
 - **Hosting**: [**Cloudflare Pages**](https://pages.cloudflare.com/)
 
 ## ⚙️ Setup and Local Development
@@ -65,6 +62,7 @@ The application will be available at http://localhost:5173.
 Copyright © 2024 SethDev. All Rights Reserved.
 This project is private intellectual property. You do not have permission to copy, modify, distribute, or use this source code in any way, in whole or in part, without the express written consent of the author (SethDev).
 Any unauthorized use of this code constitutes a violation of copyright law and will be addressed accordingly.
+
 📫 Contact
 GitHub - @sethdev17
 Discord - kurumi362
