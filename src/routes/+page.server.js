@@ -1,7 +1,5 @@
 // Calea: src/routes/+page.server.js
-export const prerender = false;
-// Importăm cheia secretă din variabilele de mediu.
-// Acest import funcționează doar pe server, exact ce avem nevoie.
+
 import { GITHUB_TOKEN } from '$env/static/private';
 
 const GITHUB_USERNAME = 'sethdev17';
@@ -54,54 +52,60 @@ const topAnime = [
 
 /** @param {typeof fetch} fetchFunc */
 async function getGithubProjects(fetchFunc) {
-
-  // ==================== BLOC DE DEBUGGING ====================
-  // Acesta va afișa în log-ul de build de pe Cloudflare dacă token-ul este vizibil
-  console.log('--- Verificare GITHUB_TOKEN ---');
-  if (GITHUB_TOKEN && GITHUB_TOKEN.startsWith('ghp_')) {
-    console.log('SUCCESS: GITHUB_TOKEN a fost găsit și pare valid.');
-    console.log('Lungimea token-ului:', GITHUB_TOKEN.length);
-  } else if (GITHUB_TOKEN) {
-    console.log('EROARE: GITHUB_TOKEN există, dar este INVALID (nu începe cu ghp_).');
-  } else {
-    console.log('EROARE CRITICĂ: GITHUB_TOKEN nu a fost găsit în mediul de build!');
-  }
-  console.log('------------------------------');
-  // =========================================================
-
+  console.log('--- Început preluare proiecte GitHub ---');
+  
   try {
+    if (!GITHUB_TOKEN || !GITHUB_TOKEN.startsWith('ghp_')) {
+      console.error('EROARE: GITHUB_TOKEN lipsește sau este invalid.');
+      return [];
+    }
+
     const headers = {
-      'Authorization': `token ${GITHUB_TOKEN}`
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'User-Agent': 'SvelteKit-Portfolio-App' // Un User-Agent este o bună practică
     };
     
-    const reposRes = await fetchFunc(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`, { headers });
+    const apiUrl = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`;
+    console.log(`Facem cerere la: ${apiUrl}`);
     
+    const reposRes = await fetchFunc(apiUrl, { headers });
+    
+    console.log(`Răspuns de la GitHub - Status: ${reposRes.status}`);
+
     if (!reposRes.ok) {
+        const errorText = await reposRes.text();
+        console.error('Răspunsul brut de la GitHub (eroare):', errorText);
         throw new Error(`GitHub API a returnat status ${reposRes.status}`);
     }
 
     const allRepos = await reposRes.json();
     
+    // Verificăm ce am primit
+    console.log(`Am primit ${allRepos.length} repository-uri în total de la API.`);
+    if (allRepos.length > 0) {
+      console.log('Exemplu de repo primit:', JSON.stringify(allRepos[0], null, 2));
+    }
+    
     const filteredRepos = allRepos
       .filter(repo => !repo.fork && repo.description)
       .slice(0, 8);
-
+      
+    console.log(`Am filtrat și am rămas cu ${filteredRepos.length} proiecte.`);
+    
     const reposWithLanguages = await Promise.all(
       filteredRepos.map(async (repo) => {
-        if (!repo.languages_url) {
-          return { ...repo, languages: {} };
-        }
+        if (!repo.languages_url) return { ...repo, languages: {} };
         const langRes = await fetchFunc(repo.languages_url, { headers });
         const languagesData = langRes.ok ? await langRes.json() : {};
         return { ...repo, languages: languagesData }; 
       })
     );
     
-    console.log(`Am preluat cu succes ${reposWithLanguages.length} proiecte de pe GitHub.`);
+    console.log(`Am finalizat preluarea limbajelor pentru ${reposWithLanguages.length} proiecte.`);
     return reposWithLanguages;
 
   } catch (error) {
-    console.error('Eroare la preluarea proiectelor GitHub:', error);
+    console.error('Eroare prinsă în blocul catch:', error);
     return [];
   }
 }
