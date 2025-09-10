@@ -2,10 +2,13 @@
 
 import { GITHUB_TOKEN } from '$env/static/private';
 
+// Această linie este cheia. Las-o aici!
+export const prerender = false;
+
 const GITHUB_USERNAME = 'sethdev17';
 
 const topAnime = [
-    { title: 'Steins;Gate', manualImageUrl: 'https://cdn.myanimelist.net/images/anime/1935/127974l.jpg', manualUrl: 'https://myanimelist.net/anime/9253/Steins_Gate' },
+   { title: 'Steins;Gate', manualImageUrl: 'https://cdn.myanimelist.net/images/anime/1935/127974l.jpg', manualUrl: 'https://myanimelist.net/anime/9253/Steins_Gate' },
     { title: 'Date A Live', manualImageUrl: 'https://cdn.myanimelist.net/images/anime/12/60779l.jpg', manualUrl: 'https://myanimelist.net/anime/15583/Date_A_Live' },
     { title: 'Satsuriku no Tenshi', manualImageUrl: 'https://cdn.myanimelist.net/images/anime/1958/93440l.jpg', manualUrl: 'https://myanimelist.net/anime/35994/Satsuriku_no_Tenshi' },
     { title: 'Initial D First Stage', manualImageUrl: 'https://cdn.myanimelist.net/images/anime/1384/127972l.jpg', manualUrl: 'https://myanimelist.net/anime/185/Initial_D_First_Stage' },
@@ -52,46 +55,29 @@ const topAnime = [
 
 /** @param {typeof fetch} fetchFunc */
 async function getGithubProjects(fetchFunc) {
-  console.log('--- Început preluare proiecte GitHub ---');
-  
   try {
     if (!GITHUB_TOKEN || !GITHUB_TOKEN.startsWith('ghp_')) {
-      console.error('EROARE: GITHUB_TOKEN lipsește sau este invalid.');
+      console.error('EROARE CRITICĂ: GITHUB_TOKEN nu a fost găsit sau este invalid în mediul de rulare!');
       return [];
     }
 
     const headers = {
       'Authorization': `token ${GITHUB_TOKEN}`,
-      'User-Agent': 'SvelteKit-Portfolio-App' // Un User-Agent este o bună practică
+      'User-Agent': 'SvelteKit-Portfolio-App'
     };
     
     const apiUrl = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`;
-    console.log(`Facem cerere la: ${apiUrl}`);
-    
     const reposRes = await fetchFunc(apiUrl, { headers });
     
-    console.log(`Răspuns de la GitHub - Status: ${reposRes.status}`);
-
     if (!reposRes.ok) {
-        const errorText = await reposRes.text();
-        console.error('Răspunsul brut de la GitHub (eroare):', errorText);
         throw new Error(`GitHub API a returnat status ${reposRes.status}`);
     }
 
     const allRepos = await reposRes.json();
-    
-    // Verificăm ce am primit
-    console.log(`Am primit ${allRepos.length} repository-uri în total de la API.`);
-    if (allRepos.length > 0) {
-      console.log('Exemplu de repo primit:', JSON.stringify(allRepos[0], null, 2));
-    }
-    
     const filteredRepos = allRepos
       .filter(repo => !repo.fork && repo.description)
       .slice(0, 8);
       
-    console.log(`Am filtrat și am rămas cu ${filteredRepos.length} proiecte.`);
-    
     const reposWithLanguages = await Promise.all(
       filteredRepos.map(async (repo) => {
         if (!repo.languages_url) return { ...repo, languages: {} };
@@ -101,11 +87,10 @@ async function getGithubProjects(fetchFunc) {
       })
     );
     
-    console.log(`Am finalizat preluarea limbajelor pentru ${reposWithLanguages.length} proiecte.`);
     return reposWithLanguages;
 
   } catch (error) {
-    console.error('Eroare prinsă în blocul catch:', error);
+    console.error('Eroare la preluarea proiectelor GitHub:', error);
     return [];
   }
 }
