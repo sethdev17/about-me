@@ -1,4 +1,3 @@
-<!-- src/lib/components/ProjectCard.svelte -->
 <script>
   /** @type {any} */
   export let project;

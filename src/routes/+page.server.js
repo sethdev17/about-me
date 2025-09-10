@@ -1,4 +1,6 @@
-// Calea: src/routes/+page.server.js
+// src/routes/+page.server.js
+
+import { GITHUB_TOKEN } from '$env/static/private';
 
 const GITHUB_USERNAME = 'sethdev17';
 
@@ -48,32 +50,45 @@ const topAnime = [
     { title: '86 EIGHTY-SIX', manualImageUrl: 'https://cdn.myanimelist.net/images/anime/1987/117507l.jpg', manualUrl: 'https://myanimelist.net/anime/41457/86' }
 ];
 
-
 /** @param {typeof fetch} fetchFunc */
 async function getGithubProjects(fetchFunc) {
   try {
-    const reposRes = await fetchFunc(`https://api.github.com/users/${GITHUB_USERNAME}/repos`);
-    if (!reposRes.ok) throw new Error('Nu am putut prelua repository-urile.');
+    const headers = {
+      'Authorization': `token ${GITHUB_TOKEN}`
+    };
+    
+    const reposRes = await fetchFunc(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`, { headers });
+    
+    if (!reposRes.ok) {
+        throw new Error(`GitHub API returned status ${reposRes.status}`);
+    }
+
     const allRepos = await reposRes.json();
+    
     const filteredRepos = allRepos
       .filter(repo => !repo.fork && repo.description)
-      .sort((a, b) => b.stargazers_count - a.stargazers_count);
+      .slice(0, 8); // Luăm doar primele 8 cele mai recente proiecte
 
+    // =============== MODIFICAREA CHEIE ESTE AICI ===============
+    // Reactivăm Promise.all pentru a prelua limbajele pentru fiecare repo
     const reposWithLanguages = await Promise.all(
       filteredRepos.map(async (repo) => {
-        const langRes = await fetchFunc(repo.languages_url);
+        const langRes = await fetchFunc(repo.languages_url, { headers });
         const languagesData = langRes.ok ? await langRes.json() : {};
-        return { ...repo, languages: languagesData };
+        // Acum adăugăm proprietatea `languages` la obiectul repo
+        return { ...repo, languages: languagesData }; 
       })
     );
+    
     return reposWithLanguages;
+    // =========================================================
+
   } catch (error) {
     console.error('Eroare la preluarea proiectelor GitHub:', error);
     return [];
   }
 }
 
-// Funcția devine acum foarte simplă și rapidă, nu mai face nicio cerere la API-uri externe
 async function getAnimeData() {
   return topAnime.map(anime => ({
     title: anime.title,
@@ -84,12 +99,11 @@ async function getAnimeData() {
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ fetch }) {
-  // Rulăm ambele funcții în paralel pentru viteză maximă
-  // getAnimeData nici măcar nu mai este asincronă, dar Promise.all funcționează oricum
   const [projects, anime] = await Promise.all([
     getGithubProjects(fetch),
     getAnimeData()
   ]);
 
+  // Acum obiectul `projects` va conține datele despre limbaje de care `ProjectCard` are nevoie
   return { projects, anime };
 }
