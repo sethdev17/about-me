@@ -6,15 +6,10 @@
   export let data;
 
   // ===================================================================
-  // CONFIGURARE PENTRU META TAG-URI - Aici modifici datele principale
+  // CONFIGURARE SIMPLIFICATĂ
   // ===================================================================
-  const siteConfig = {
-    url: "https://sethdev.pages.dev",
-    author: "SethDev",
-    twitterHandle: "", // Lasă gol dacă nu ai cont de Twitter
-    // Calea către imaginea de preview, care trebuie să fie în folderul `static`
-    socialPreviewImage: "/images/favicon.svg"
-  };
+  const siteUrl = "https://sethdev.pages.dev";
+  const socialImage = `${siteUrl}/social-preview.png`; // URL-ul complet către imaginea ta
   // ===================================================================
 
   const translations = {
@@ -115,62 +110,33 @@
   onDestroy(() => {
     clearTimeout(animationTimeout);
   });
-
-  $: jsonLdSchema = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    "name": siteConfig.author,
-    "url": siteConfig.url,
-    "mainEntity": {
-      "@type": "Person",
-      "name": siteConfig.author,
-      "alternateName": "SethDev",
-      "jobTitle": "Web Developer",
-      "url": siteConfig.url,
-      "image": `${siteConfig.url}/images/profil.jpg`
-    }
-  });
 </script>
 
 <svelte:head>
   <title>{t.title}</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1d4ed8">
+  
+  <!-- SEO Esențial -->
   <meta name="description" content={t.metaDescription}>
-  <meta name="keywords" content="sethdev, dezvoltator, programator, portofoliu, javascript, svelte, css, html, anime, web developer">
-  <meta name="author" content={siteConfig.author}>
+  <meta name="author" content="SethDev">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href={siteConfig.url}>
+  <link rel="canonical" href={siteUrl}>
+
+  <!-- META TAG-URI PENTRU PREVIZUALIZARE (DISCORD, FACEBOOK, ETC) -->
   <meta property="og:title" content={t.title}>
   <meta property="og:description" content={t.metaDescription}>
-  <meta property="og:type" content="profile">
-  <meta property="profile:username" content="sethdev17">
-  <meta property="og:url" content={siteConfig.url}>
-  <meta property="og:site_name" content={t.title}>
-  <meta property="og:image" content={`${siteConfig.url}${siteConfig.socialPreviewImage}`}>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={siteUrl}>
+  
+  <!-- CEA MAI IMPORTANTĂ PARTE: Imaginea de preview -->
+  <meta property="og:image" content={socialImage}>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Previzualizare a portofoliului lui SethDev">
-  <meta property="og:locale" content={lang === 'ro' ? 'ro_RO' : 'en_US'}>
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content={t.title}>
-  <meta name="twitter:description" content={t.metaDescription}>
-  <meta name="twitter:image" content={`${siteConfig.url}${siteConfig.socialPreviewImage}`}>
-  {#if siteConfig.twitterHandle}
-    <meta name="twitter:creator" content={siteConfig.twitterHandle}>
-    <meta name="twitter:site" content={siteConfig.twitterHandle}>
-  {/if}
-  <script type="application/ld+json">{jsonLdSchema}</script>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-10JY9HL34J"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-10JY9HL34J');
-</script>
+  <meta property="og:image:alt" content="Portofoliu SethDev">
+  
+  <!-- Culoarea barei de embed pe Discord -->
+  <meta name="theme-color" content="#1d4ed8">
 </svelte:head>
 
 <div class="container">
@@ -499,7 +465,6 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
   }
 
-  /* MODIFICARE: Folosim :global pentru a stiliza paragrafele injectate */
   :global(.text-block p) {
     margin: 0 0 1rem;
     line-height: 1.7;
