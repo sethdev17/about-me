@@ -63,6 +63,5 @@ This project is private intellectual property. You do not have permission to cop
 Any unauthorized use of this code constitutes a violation of copyright law and will be addressed accordingly.
 
 📫 Contact
-
-Discord - [kurumi362](https://discord.com/users/602431963688730624)
-Email - gg079331@gmail.com
+- **Discord** - [kurumi362](https://discord.com/users/602431963688730624)
+- **Email** - gg079331@gmail.com
