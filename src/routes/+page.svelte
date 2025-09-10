@@ -162,6 +162,15 @@
     <meta name="twitter:site" content={siteConfig.twitterHandle}>
   {/if}
   <script type="application/ld+json">{jsonLdSchema}</script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-10JY9HL34J"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-10JY9HL34J');
+</script>
 </svelte:head>
 
 <div class="container">
