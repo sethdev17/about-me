@@ -1,7 +1,7 @@
 // src/routes/sitemap.xml/+server.js
 
 // Aici specifici URL-ul de bază al site-ului tău.
-const siteUrl = 'https://domeniul-tau.ro';
+const siteUrl = 'https://sethdev.pages.dev';
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ fetch }) {

@@ -5,4 +5,4 @@ User-agent: *
 Allow: /
 
 # Specifică locația sitemap-ului tău. Asigură-te că domeniul este corect.
-Sitemap: https://domeniul-tau.ro/sitemap.xml
+Sitemap: https://sethdev.pages.dev/sitemap.xml
