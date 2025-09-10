@@ -1,5 +1,7 @@
-// src/routes/+page.server.js
+// Calea: src/routes/+page.server.js
 
+// Importăm cheia secretă din variabilele de mediu.
+// Acest import funcționează doar pe server, exact ce avem nevoie.
 import { GITHUB_TOKEN } from '$env/static/private';
 
 const GITHUB_USERNAME = 'sethdev17';
@@ -54,9 +56,11 @@ const topAnime = [
 async function getGithubProjects(fetchFunc) {
   try {
     const headers = {
+      // Adăugăm header-ul de autorizare pentru a folosi token-ul
       'Authorization': `token ${GITHUB_TOKEN}`
     };
     
+    // Cerem repository-urile sortate după data ultimului push
     const reposRes = await fetchFunc(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`, { headers });
     
     if (!reposRes.ok) {
@@ -69,10 +73,13 @@ async function getGithubProjects(fetchFunc) {
       .filter(repo => !repo.fork && repo.description)
       .slice(0, 8); // Luăm doar primele 8 cele mai recente proiecte
 
-    // =============== MODIFICAREA CHEIE ESTE AICI ===============
     // Reactivăm Promise.all pentru a prelua limbajele pentru fiecare repo
     const reposWithLanguages = await Promise.all(
       filteredRepos.map(async (repo) => {
+        // Nu facem cerere dacă nu există URL-ul pentru limbaje
+        if (!repo.languages_url) {
+          return { ...repo, languages: {} };
+        }
         const langRes = await fetchFunc(repo.languages_url, { headers });
         const languagesData = langRes.ok ? await langRes.json() : {};
         // Acum adăugăm proprietatea `languages` la obiectul repo
@@ -81,11 +88,10 @@ async function getGithubProjects(fetchFunc) {
     );
     
     return reposWithLanguages;
-    // =========================================================
 
   } catch (error) {
     console.error('Eroare la preluarea proiectelor GitHub:', error);
-    return [];
+    return []; // Returnează un array gol în caz de eroare
   }
 }
 
