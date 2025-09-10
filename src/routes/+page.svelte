@@ -19,7 +19,7 @@
   const translations = {
     ro: {
       title: 'SethDev | Despre Mine',
-      metaDescription: 'Portofoliu personal al lui SethDev, un dezvoltator de 19 ani pasionat de programare, JavaScript, Svelte și anime. Descoperă proiectele și parcursul meu în lumea codului.',
+      metaDescription: 'Află atât despre mine cât și despre portofoliul meu.',
       ageText: '19 Ani',
       bio: `
         <p>Salut! Sunt un dezvoltator la început de drum în vârstă de 19 ani, captivat de procesul de a transforma idei creative și unice la realitate prin intermediul liniilor de cod. Poate te întrebi, oare ce m-a făcut să mă captiveze acest domeniu?</p>
