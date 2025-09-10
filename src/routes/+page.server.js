@@ -1,5 +1,5 @@
 // Calea: src/routes/+page.server.js
-
+export const prerender = false;
 // Importăm cheia secretă din variabilele de mediu.
 // Acest import funcționează doar pe server, exact ce avem nevoie.
 import { GITHUB_TOKEN } from '$env/static/private';
