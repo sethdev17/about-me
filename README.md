@@ -1,4 +1,4 @@
-# SethDev - Personal Portfolio
+# SethDev - About Me Website Project
 
 This repository holds the source code for my personal page—an interactive and animated single-page experience, crafted with [SvelteKit](https://kit.svelte.dev/). It's designed to be my digital business card for anyone who wants to get to know me better, offering a glimpse into my interests, passions, and the skills I've gathered along the way.
 
