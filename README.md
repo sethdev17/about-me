@@ -21,41 +21,106 @@ This repository holds the source code for my personal page—an interactive and 
 - **Styling**: **[Pure CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)** (with modern features like Flexbox, Grid, and CSS Variables)
 - **Hosting**: [**Cloudflare Pages**](https://pages.cloudflare.com/)
 
-## ⚙️ Setup and Local Development
+## ⚙️ Setup & Local Development (developer instructions)
 
-To run this project on your local machine, follow the steps below.
+The following instructions assume a fresh clone and cover three common environments:
 
-### 1. Prerequisites
-Ensure you have [Node.js](https://nodejs.org/) (version 18.x or newer) installed.
+- PowerShell (Windows native Node)
+- WSL / Ubuntu (Linux inside Windows — recommended if using WSL)
+- CI / build servers (Linux)
 
-### 2. Clone the Repository
-```
+Follow the section that matches your development environment.
+
+### Prerequisites
+- Node.js (recommended >= 18)
+- npm
+- If using WSL, install Node inside WSL and run the commands from the WSL shell (do not mix Windows Node with WSL).
+
+### Clone the repository
+```bash
 git clone https://github.com/sethdev17/about-me.git
 cd about-me
 ```
-### 3. Install Dependencies
+
+### 1) PowerShell (Windows native Node)
+Use these commands if Node is installed on Windows and you run commands from PowerShell. These steps avoid installing optional native binaries that may fail on Windows:
+
+```powershell
+# install dependencies without optional native packages
+npm install --no-optional
+
+# generate Svelte language / TSX helper files
+npx svelte-kit sync
+
+# run dev server
+npm run dev
 ```
-npm install
+
+### 2) WSL / Ubuntu (recommended if you use WSL)
+If you have WSL (Ubuntu) available, this is the recommended flow because it matches typical CI/production Linux environments:
+
+```bash
+# install strictly from package-lock (reproducible)
+npm ci
+
+# generate Svelte language / TSX helper files
+npx svelte-kit sync
+
+# run dev server
+npm run dev
 ```
-### 4. Configure Environment (Crucial Step)
-The project uses the GitHub API to fetch repositories. To avoid rate limits, a personal access token is required.
-Generate a GitHub Personal Access Token. You only need the public_repo scope.
-Create a .env file in the root of the project and add the following content:
+
+What is `npm ci`?
+- `npm ci` installs exactly the versions listed in `package-lock.json`. It's faster and more reproducible than `npm install` and is intended for CI and clean installs.
+- Use `npm install` when adding or updating packages locally; use `npm ci` in CI and when you want a clean, reproducible install.
+
+### 3) CI / build server (Linux)
+Include these steps in your CI workflow (e.g. GitHub Actions with `runs-on: ubuntu-latest`):
+
+```bash
+npm ci
+npx svelte-kit sync
+npm run build
+```
+
+### Environment variables (`.env`)
+- Create a `.env` file in the project root (same folder as `package.json`).
+- Example:
 ```
 # .env
-# Your personal token from GitHub
-GITHUB_TOKEN="ghp_YOUR_TOKEN_HERE"
+GITHUB_TOKEN=ghp_YOUR_TOKEN_HERE
 ```
-### 5. Run the Development Server
-Once everything is configured, start the development server:
-```
-# Start the server
-npm run dev
+- `GITHUB_TOKEN` is used server-side (in `+page.server.js`) to fetch GitHub repositories. Make sure the token is available before build in CI.
+- Do NOT commit `.env` to git. Use your CI secret storage for tokens.
 
-# Or start the server and open it in a new browser tab
-npm run dev -- --open
+### Troubleshooting & common issues
+- EBADPLATFORM during install: the lockfile may reference native packages for a different OS/arch. Fixes:
+  - Use `npm install --no-optional` (Windows) or
+  - Remove `node_modules` + `package-lock.json` and run `npm ci` in the appropriate environment (Linux).
+- `npx svelte-kit sync` throws "Cannot find module @rollup/rollup-win32-x64-msvc": this can happen on Windows. Temporary local workaround (NOT for commit):
+  - Create `node_modules/@rollup/rollup-win32-x64-msvc/index.js` that exports an empty object (or simple stub), then re-run `npx svelte-kit sync`.
+  - Prefer using WSL or CI to avoid this problem. Do not commit stub files in `node_modules`.
+
+### Notes about `prepare` and CI
+- The repository temporarily changes the `prepare` script in `package.json` to skip running `svelte-kit sync` during `npm install` on Windows (to avoid local install crashes).
+- In CI, explicitly run `npx svelte-kit sync` (as shown above) before `npm run build` so generated helper files exist.
+- Alternatively, re-enable `prepare` to `svelte-kit sync` and ensure your CI runs on Linux where optional native packages can be installed correctly.
+
+### Quick start summary
+- PowerShell (Windows):
+```powershell
+npm install --no-optional
+npx svelte-kit sync
+npm run dev
 ```
-The application will be available at http://localhost:5173.
+- WSL / Ubuntu (recommended):
+```bash
+npm ci
+npx svelte-kit sync
+npm run dev
+```
+
+---
 
 ©️ Copyright and License
 Copyright © 2024 SethDev. All Rights Reserved.
