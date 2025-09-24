@@ -1,141 +1,14 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { slide, fade } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
   import ProjectCard from '$lib/components/ProjectCard.svelte';
+  import { language } from '$lib/stores.js';
 
   export let data;
-
-  // ===================================================================
-  // CONFIGURARE SIMPLIFICATĂ
-  // ===================================================================
-  const siteUrl = "https://sethdev.pages.dev";
-  const socialImage = `${siteUrl}/social-preview.png`;
-  // ===================================================================
-
-  // ===================================================================
-  // NAVIGARE ȘI UI STATE
-  // ===================================================================
-  let isMenuOpen = false;
-  let isScrolled = false;
-  let currentSection = 'about';
-  let showScrollTop = false;
-  let observer;
-
-  // Funcții pentru navigare
-  function toggleMenu() {
-    isMenuOpen = !isMenuOpen;
-  }
-
-  function closeMenu() {
-    isMenuOpen = false;
-  }
-
-  function scrollToSection(sectionId) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      closeMenu();
-    }
-  }
-
-  // handleScroll gestionează EXTREMELE (sus și jos)
-  function handleScroll() {
-    isScrolled = window.scrollY > 50;
-    showScrollTop = window.scrollY > 300;
-
-    const scrollPosition = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const pageHeight = document.body.offsetHeight;
-
-    // Condiția 1: Suntem la finalul paginii. Forțăm 'contact'.
-    if (windowHeight + scrollPosition >= pageHeight - 50) {
-      if (currentSection !== 'contact') currentSection = 'contact';
-    } 
-    // Condiția 2: Suntem la începutul paginii. Forțăm 'about'.
-    else if (scrollPosition < 250) {
-      if (currentSection !== 'about') currentSection = 'about';
-    }
-    // Pentru orice alt caz, încercăm să ghidăm selecția pe baza poziției
-    // elementelor în viewport (centru). Acest fallback previne saltul
-    // peste secțiunea 'anime' când urcăm rapid din footer.
-    else {
-      updateCurrentSectionByViewportCenter();
-    }
-  }
-
-  // Fallback robust: alege secțiunea al cărei centru este cel mai aproape de
-  // centrul viewport-ului. Include toate secțiunile principale pentru a evita
-  // salturile când IntersectionObserver nu a încă actualizat starea.
-  function updateCurrentSectionByViewportCenter() {
-    try {
-      const sections = ['about', 'projects', 'anime', 'contact'];
-      const viewportCenter = window.innerHeight / 2;
-      let best = { id: currentSection, dist: Infinity };
-
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const elCenter = rect.top + rect.height / 2;
-        const dist = Math.abs(elCenter - viewportCenter);
-        if (dist < best.dist) best = { id, dist };
-      });
-
-      if (best.id && best.id !== currentSection) {
-        currentSection = best.id;
-      }
-    } catch (e) {
-      // Non-fatal: if anything goes wrong, leave currentSection as-is.
-      console.warn('updateCurrentSectionByViewportCenter error', e);
-    }
-  }
-
-  // Scroll to top function
-  function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // IntersectionObserver gestionează secțiunile din MIJLOC
-  function setupIntersectionObserver() {
-    const sectionsToObserve = ['projects', 'anime'];
-
-    const options = {
-      // MODIFICAREA CHEIE: O zonă de activare mult mai mare.
-      // Se activează când o secțiune intră în zona vizibilă dintre 150px de sus și 25% de jos.
-      // Asta elimină "zonele moarte" la scroll invers.
-      rootMargin: '-150px 0px -25% 0px',
-      threshold: 0
-    };
-
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        // Activăm secțiunea DOAR dacă intră în zona de vizibilitate
-        if (entry.isIntersecting) {
-          // Verificăm să nu suprascriem regulile din handleScroll
-          const scrollPosition = window.scrollY;
-          const windowHeight = window.innerHeight;
-          const pageHeight = document.body.offsetHeight;
-          if (scrollPosition >= 250 && windowHeight + scrollPosition < pageHeight - 50) {
-             currentSection = entry.target.id;
-          }
-        }
-      });
-    }, options);
-
-    sectionsToObserve.forEach(id => {
-      const element = document.getElementById(id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-  }
-
-  // Close menu when clicking outside
-  function handleClickOutside(event) {
-    if (isMenuOpen && !event.target.closest('.mobile-menu-btn') && !event.target.closest('.mobile-nav')) {
-      closeMenu();
-    }
-  }
+  export let t = {};
+  export let lang = 'ro';
+  export let scrollToSection = (sectionId) => {};
+  export let currentSection = 'about';
 
   const translations = {
     ro: {
@@ -190,16 +63,25 @@
     }
   };
 
-  let lang = 'ro';
-  let t = translations[lang];
-  let isTouchDevice = false;
-
-  function setLanguage(newLang) {
-    if (translations[newLang]) {
-      lang = newLang;
+  language.subscribe(newLangValue => {
+    if (translations[newLangValue]) {
+      lang = newLangValue;
       t = translations[lang];
     }
-  }
+  });
+
+  const _scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  };
+  scrollToSection = _scrollToSection;
+
+  let showScrollTop = false;
+  let observer;
+  const siteUrl = "https://sethdev.pages.dev";
+  const socialImage = `${siteUrl}/social-preview.png`;
+  let isTouchDevice = false;
+  let emailCopied = false;
+  const myEmail = 'gg079331@gmail.com';
 
   const languages = [
     { name: 'JavaScript', color: '#f1e05a', icon: '⚡', docUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript' },
@@ -209,19 +91,19 @@
 
   let showAllAnime = false;
   const initialVisibleCount = 15;
-
-  let emailCopied = false;
-  const myEmail = 'gg079331@gmail.com';
+  let animationState = 0;
+  let animationTimeout;
 
   function copyEmail() {
     navigator.clipboard.writeText(myEmail).then(() => {
       emailCopied = true;
-      setTimeout(() => { emailCopied = false; }, 2500);
+      setTimeout(() => emailCopied = false, 2500);
     });
   }
 
-  let animationState = 0;
-  let animationTimeout;
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   const animationSequence = () => {
     animationState = 1;
@@ -239,102 +121,68 @@
 
   onMount(() => {
     const browserLang = navigator.language.split('-')[0];
-    setLanguage(browserLang);
+    if (translations[browserLang]) {
+      language.set(browserLang);
+    }
+
     isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     animationTimeout = setTimeout(animationSequence, 3000);
-    
+
+    function handleScroll() {
+      showScrollTop = window.scrollY > 300;
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const pageHeight = document.body.offsetHeight;
+      if (windowHeight + scrollPosition >= pageHeight - 50) {
+        if (currentSection !== 'contact') currentSection = 'contact';
+      } else if (scrollPosition < 250) {
+        if (currentSection !== 'about') currentSection = 'about';
+      }
+    }
+
+    function setupIntersectionObserver() {
+      const sectionsToObserve = ['projects', 'anime'];
+      const options = { rootMargin: '-40% 0px -50% 0px' };
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) currentSection = entry.target.id;
+        });
+      }, options);
+      sectionsToObserve.forEach(id => document.getElementById(id) && observer.observe(document.getElementById(id)));
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    document.addEventListener('click', handleClickOutside);
-    
+
     setTimeout(() => {
-        handleScroll();
-        setupIntersectionObserver();
+      handleScroll();
+      setupIntersectionObserver();
     }, 100);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      document.removeEventListener('click', handleClickOutside);
       if (observer) observer.disconnect();
+      clearTimeout(animationTimeout);
     };
-  });
-
-  onDestroy(() => {
-    clearTimeout(animationTimeout);
-    if (observer) observer.disconnect();
   });
 </script>
 
 <svelte:head>
   <title>{t.title}</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  
   <meta name="description" content={t.metaDescription}>
-  <meta name="author" content="SethDev">
-  <meta name="robots" content="index, follow">
   <link rel="canonical" href={siteUrl}>
-
   <meta property="og:title" content={t.title}>
   <meta property="og:description" content={t.metaDescription}>
   <meta property="og:type" content="website">
   <meta property="og:url" content={siteUrl}>
-  
   <meta property="og:image" content={socialImage}>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Portofoliu SethDev">
-  
   <meta name="theme-color" content="#1d4ed8">
 </svelte:head>
 
-<!-- HEADER -->
-<header class="main-header" class:scrolled={isScrolled}>
-  <div class="header-content">
-    <div class="logo">
-      <span class="logo-text">SethDev</span>
-    </div>
-    
-    <nav class="desktop-nav">
-      <a href="#about" class="nav-link" class:active={currentSection === 'about'} on:click|preventDefault={() => scrollToSection('about')}>
-        {t.navAbout}
-      </a>
-      <a href="#projects" class="nav-link" class:active={currentSection === 'projects'} on:click|preventDefault={() => scrollToSection('projects')}>
-        {t.navProjects}
-      </a>
-      <a href="#anime" class="nav-link" class:active={currentSection === 'anime'} on:click|preventDefault={() => scrollToSection('anime')}>
-        {t.navAnime}
-      </a>
-      <a href="#contact" class="nav-link" class:active={currentSection === 'contact'} on:click|preventDefault={() => scrollToSection('contact')}>
-        {t.navContact}
-      </a>
-    </nav>
-
-    <button class="mobile-menu-btn" on:click={toggleMenu} aria-label="Toggle menu">
-      <span class="hamburger" class:active={isMenuOpen}></span>
-      <span class="hamburger" class:active={isMenuOpen}></span>
-      <span class="hamburger" class:active={isMenuOpen}></span>
-    </button>
-  </div>
-
-  <nav class="mobile-nav" class:open={isMenuOpen} transition:slide={{ duration: 300 }}>
-    <a href="#about" class="mobile-nav-link" on:click={() => scrollToSection('about')}>
-      {t.navAbout}
-    </a>
-    <a href="#projects" class="mobile-nav-link" on:click={() => scrollToSection('projects')}>
-      {t.navProjects}
-    </a>
-    <a href="#anime" class="mobile-nav-link" on:click={() => scrollToSection('anime')}>
-      {t.navAnime}
-    </a>
-    <a href="#contact" class="mobile-nav-link" on:click={() => scrollToSection('contact')}>
-      {t.navContact}
-    </a>
-  </nav>
-</header>
-
 <div class="container">
   <div class="background-effects"></div>
-
   <main id="about" class="profile-card">
     <div class="main-content">
       <div class="pfp-container">
@@ -343,7 +191,7 @@
           alt="Poza mea de profil"
           class="profile-picture"
           class:slide-left={animationState !== 0}
-        >
+        />
         <div class="animated-content-wrapper">
           <div class="animated-text" class:visible={animationState === 1} data-text="SethDev">
             SethDev
@@ -361,26 +209,28 @@
 
     <div class="social-links">
       <a href="https://github.com/sethdev17" target="_blank" rel="noopener noreferrer" aria-label="Profilul meu de GitHub">
-        <img src="/images/github.svg" alt="GitHub Icon">
+        <img src="/images/github.svg" alt="GitHub Icon" />
       </a>
       <a href="https://discord.com/users/602431963688730624" target="_blank" rel="noopener noreferrer" aria-label="Contacteaza-ma pe Discord">
-        <img src="/images/discord.svg" alt="Discord Icon">
+        <img src="/images/discord.svg" alt="Discord Icon" />
       </a>
+
       {#if isTouchDevice}
         <a href="mailto:{myEmail}" aria-label="Trimite un email">
-          <img src="/images/email.svg" alt="Email Icon">
+          <img src="/images/email.svg" alt="Email Icon" />
         </a>
       {:else}
         <button on:click={copyEmail} aria-label="Copiaza adresa de email">
           {#if emailCopied}
             <span>✓ Copiat!</span>
           {:else}
-            <img src="/images/email.svg" alt="Email Icon">
+            <img src="/images/email.svg" alt="Email Icon" />
           {/if}
         </button>
       {/if}
+
       <a href="https://www.instagram.com/19.decembrie_" target="_blank" rel="noopener noreferrer" aria-label="Profilul meu de Instagram">
-        <img src="/images/instagram.svg" alt="Instagram Icon">
+        <img src="/images/instagram.svg" alt="Instagram Icon" />
       </a>
     </div>
 
@@ -431,7 +281,6 @@
             </a>
           </li>
         {/each}
-
         {#if data.anime.length > initialVisibleCount}
           {#if showAllAnime}
             {#each data.anime.slice(initialVisibleCount) as anime (anime.title)}
@@ -445,7 +294,6 @@
               </li>
             {/each}
           {/if}
-
           <button class="toggle-list-button" on:click={() => showAllAnime = !showAllAnime}>
             {showAllAnime ? t.showLess : t.showMore}
           </button>
@@ -455,51 +303,13 @@
   </main>
 </div>
 
-<!-- FOOTER -->
-<footer id="contact" class="main-footer">
-  <div class="footer-content">
-    <div class="footer-section footer-logo">
-      <div class="logo">
-        <span class="logo-text">SethDev</span>
-      </div>
-    </div>
-    
-    <div class="footer-section">
-      <h3>{t.footerFollow}</h3>
-      <div class="social-links-footer">
-        <a href="https://github.com/sethdev17" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-          <img src="/images/github.svg" alt="GitHub">
-        </a>
-        <a href="https://discord.com/users/602431963688730624" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-          <img src="/images/discord.svg" alt="Discord">
-        </a>
-        <a href="mailto:gg079331@gmail.com" aria-label="Email">
-          <img src="/images/email.svg" alt="Email">
-        </a>
-        <a href="https://www.instagram.com/19.decembrie_" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <img src="/images/instagram.svg" alt="Instagram">
-        </a>
-        <a href="https://myanimelist.net/profile/Felix17" target="_blank" rel="noopener noreferrer" aria-label="MyAnimeList">
-          <img src="/images/mal-icon.svg" alt="MyAnimeList">
-        </a>
-      </div>
-    </div>
-    
-    <div class="footer-section footer-bottom">
-      <div class="footer-bottom-content">
-        <p class="footer-rights">{t.footerRights}</p>
-        <div class="language-switcher">
-          <button class="lang-btn" class:active={lang === 'ro'} on:click={() => setLanguage('ro')}>RO</button>
-          <button class="lang-btn" class:active={lang === 'en'} on:click={() => setLanguage('en')}>EN</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- Scroll to Top Button -->
-<button class="scroll-to-top" class:visible={showScrollTop} on:click={scrollToTop} aria-label="Scroll to top">
-  ↑
+<button
+  class="scroll-to-top"
+  class:visible={showScrollTop}
+  on:click={scrollToTop}
+  aria-label="Scroll to top"
+>
+  ⮝
 </button>
 
 <style>
@@ -511,251 +321,549 @@
     overflow-y: scroll;
     overflow-x: hidden;
   }
-  .main-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-  }
-  .main-header.scrolled {
-    background: rgba(0, 0, 0, 0.95);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-  .header-content {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    align-items: center;
-    padding: 1rem 2rem 1rem 0.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .logo {
+
+  .container {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  .logo-text {
-    font-size: 1.5rem;
-    font-weight: bold;
-    background: linear-gradient(90deg, #ffffff 0%, #a7c8ff 50%, #dbeafe 100%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradientShift 3s ease-in-out infinite;
-  }
-  @keyframes gradientShift {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-  .desktop-nav {
-    display: flex;
-    gap: 2rem;
-    justify-self: center;
-  }
-  .nav-link {
-    color: #c7c7c7;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 8rem 1rem 4rem;
     position: relative;
-    padding: 0.5rem 0;
+    z-index: 1;
+    box-sizing: border-box;
   }
-  .nav-link:hover {
-    color: #ffffff;
+
+  .container::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 900px;
+    height: 900px;
+    background-image: radial-gradient(circle, rgba(29, 78, 216, 0.25) 0, rgba(0, 0, 0, 0) 55%);
+    transform: translate(-50%, -50%);
+    z-index: -2;
   }
-  .nav-link.active {
-    color: #60a5fa;
+
+  .background-effects {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
   }
-  .nav-link::after {
+
+  .background-effects::before {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #60a5fa, #a7c8ff);
-    transition: width 0.3s ease;
+    width: 6px;
+    height: 6px;
+    background: #e0eaff;
+    border-radius: 50%;
+    box-shadow:
+      0 0 15px 4px #a7c8ff,
+      0 0 25px 10px #60a5fa,
+      0 0 50px 20px rgba(29, 78, 216, 0.5);
+    animation: core-pulse 4s infinite ease-in-out;
   }
-  .nav-link:hover::after,
-  .nav-link.active::after {
+
+  @keyframes core-pulse {
+    0%, 100% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    max-width: 600px;
     width: 100%;
   }
-  .mobile-menu-btn {
-    display: none;
+
+  .main-content {
+    display: flex;
     flex-direction: column;
-    gap: 4px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    justify-self: end;
-  }
-  .hamburger {
-    width: 25px;
-    height: 3px;
-    background: #ffffff;
-    transition: all 0.3s ease;
-    border-radius: 2px;
-  }
-  .hamburger.active:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
-  }
-  .hamburger.active:nth-child(2) {
-    opacity: 0;
-  }
-  .hamburger.active:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
-  }
-  .mobile-nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: none;
-    flex-direction: column;
-    padding: 1rem 2rem;
-  }
-  .mobile-nav.open {
-    display: flex;
-  }
-  .mobile-nav-link {
-    color: #c7c7c7;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: color 0.3s ease;
-  }
-  .mobile-nav-link:hover {
-    color: #60a5fa;
-  }
-  .mobile-nav-link:last-child {
-    border-bottom: none;
-  }
-  .main-footer {
-    background: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 2rem 0 1rem;
-    margin-top: 2rem;
-    position: relative;
-    z-index: 100;
-  }
-  .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    gap: 2rem;
     align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  .pfp-container {
     position: relative;
-    z-index: 10;
-  }
-  .footer-section h3 {
-    color: #ffffff;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-  }
-  .social-links-footer {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .social-links-footer a {
-    display: flex;
-    align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
+    align-items: center;
+  }
+
+  .profile-picture {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    transition: all 0.3s ease;
-    opacity: 0.7;
-    pointer-events: auto;
-    z-index: 10;
+    object-fit: cover;
     position: relative;
-    text-decoration: none;
+    z-index: 10;
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
   }
-  .social-links-footer a:hover {
-    background: rgba(96, 165, 250, 0.2);
-    opacity: 1;
-    transform: translateY(-2px);
+
+  .profile-picture.slide-left {
+    transform: translateX(-160px);
   }
-  .social-links-footer img {
-    width: 20px;
-    height: 20px;
-    filter: brightness(0) invert(1);
-  }
-  .footer-logo {
+
+  .animated-content-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: 100%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: center;
   }
-  .footer-logo .logo-text {
+
+  .animated-text {
+    position: absolute;
     font-size: 1.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+    color: transparent;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+
+  .animated-text.visible {
+    opacity: 1;
+    transform: translateY(0);
     background: linear-gradient(90deg, #ffffff 0%, #a7c8ff 50%, #dbeafe 100%);
     background-size: 200% 100%;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
     animation: gradientShift 3s ease-in-out infinite;
   }
-  .footer-bottom {
-    display: flex;
-    justify-content: flex-end;
+
+  .animated-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, #dbeafe 0%, #3b82f6 50%, #a7c8ff 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: blur(10px);
+    animation: gradientShift 3s ease-in-out infinite;
   }
-  .footer-bottom-content {
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .fire-trail {
+    position: absolute;
+    bottom: 25%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #dbeafe, #60a5fa, #dbeafe, transparent);
+    box-shadow: 0 0 8px 1px #a7c8ff, 0 0 15px 2px #3b82f6;
+    border-radius: 2px;
+    transform: scaleX(0);
+    opacity: 0;
+    transform-origin: right;
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .fire-trail.active {
+    animation: draw-in 0.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+
+  @keyframes draw-in {
+    from { transform-origin: left; transform: scaleX(0); opacity: 0; }
+    to { transform-origin: left; transform: scaleX(1); opacity: 1; }
+  }
+
+  .text-block {
+    background-color: rgba(25, 25, 30, 0.5);
+    padding: 1.2rem 1.5rem;
+    border-radius: 16px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  :global(.text-block p) {
+    margin: 0 0 1rem 0;
+    line-height: 1.7;
+    font-size: 0.95rem;
+    text-align: left;
+  }
+
+  :global(.text-block p:last-child) {
+    margin-bottom: 0;
+  }
+
+  :global(.discord-link) {
+    color: #7289DA;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    border-bottom: 2px solid transparent;
+  }
+
+  :global(.discord-link:hover) {
+    color: #99aab5;
+    border-bottom-color: #99aab5;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 2.5rem;
+    justify-content: center;
+  }
+
+  .social-links a,
+  .social-links button {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    border-radius: 50%;
+  }
+
+  .social-links a::before,
+  .social-links button::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(150, 200, 255, 0.3) 0, rgba(29, 78, 216, 0.2) 50%, transparent 70%);
+    box-shadow:
+      0 0 15px rgba(29, 78, 216, 0.5),
+      inset 0 0 10px rgba(255, 255, 255, 0.2);
+    animation: water-bubble 3s ease-in-out infinite;
+    z-index: -1;
+  }
+
+  .social-links a::after,
+  .social-links button::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid rgba(150, 200, 255, 0.3);
+    animation: ripple 2s ease-out infinite;
+    opacity: 0;
+    z-index: -2;
+  }
+
+  .social-links a img,
+  .social-links button img {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease-out, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .social-links a:hover,
+  .social-links button:hover {
+    transform: translateY(-3px) scale(1.1);
+  }
+
+  .social-links a:hover::before,
+  .social-links button:hover::before {
+    animation: water-bubble-hover 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .social-links a:hover::after,
+  .social-links button:hover::after {
+    animation: ripple-hover 1.5s ease-out infinite;
+    opacity: 0.5;
+  }
+
+  .social-links a:hover img,
+  .social-links button:hover img {
+    filter: brightness(0) invert(1) drop-shadow(0 0 6px hsla(0, 0%, 100%, 0.9));
+  }
+
+  .social-links button span {
+    color: #a7c8ff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  @keyframes water-bubble {
+    0%, 100% { transform: scale(1) translateY(0); opacity: 0.8; }
+    50% { transform: scale(1.05) translateY(-2px); opacity: 1; }
+  }
+
+  @keyframes water-bubble-hover {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+  }
+
+  @keyframes ripple {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  @keyframes ripple-hover {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  .languages-section {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .languages-section h2 {
+    text-align: left;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    color: #f0f0f0;
+  }
+
+  .languages-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+  }
+
+  .language-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .language-card {
+    background-color: rgba(25, 25, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 1.2rem 1rem;
+    transition: all 0.3s ease-in-out;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    align-items: flex-end;
-    text-align: right;
-  }
-  .footer-rights {
-    color: #9a9a9a;
-    font-size: 0.9rem;
-    margin: 0;
-  }
-  .language-switcher {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .lang-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #c7c7c7;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    pointer-events: auto;
-    z-index: 10;
+    align-items: center;
+    text-align: center;
+    min-width: 140px;
     position: relative;
+    overflow: hidden;
   }
-  .lang-btn:hover {
-    background: rgba(96, 165, 250, 0.2);
-    color: #ffffff;
+
+  .language-card::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 120%, hsla(from var(--glow-color) h s l / 0.35) 0, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
   }
-  .lang-btn.active {
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    color: #ffffff;
-    border-color: transparent;
+
+  .language-icon,
+  .language-info {
+    position: relative;
+    z-index: 1;
   }
+
+  .language-card:hover {
+    transform: translateY(-5px);
+    border-color: hsla(from var(--glow-color) h s l / 0.5);
+  }
+
+  .language-card:hover::after {
+    opacity: 1;
+  }
+
+  .language-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .language-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .language-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .language-info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #f0f0f0;
+    font-weight: 600;
+  }
+
+  .language-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+
+  .projects-section {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .projects-section h2 {
+    text-align: left;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    color: #f0f0f0;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .anime-section,
+  .top-anime-section {
+    width: 100%;
+    max-width: 600px;
+    background-color: rgba(25, 25, 30, 0.5);
+    padding: 1.2rem 1.8rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .anime-section p {
+    margin: 0;
+    line-height: 1.7;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  :global(.mal-icon) {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin: 0 4px;
+    transition: transform 0.2s ease-out;
+    filter: brightness(0) invert(1);
+  }
+
+  :global(.mal-icon:hover) {
+    transform: scale(1.2);
+  }
+
+  .top-anime-section h2 {
+    text-align: left;
+    margin: 0 0 1.5rem 0;
+    font-size: 1.2rem;
+    color: #f0f0f0;
+  }
+
+  .top-anime-list {
+    list-style: decimal;
+    margin: 0;
+    padding-left: 1.8rem;
+    overflow: visible;
+  }
+
+  .top-anime-list li {
+    position: relative;
+    margin-bottom: 0.8rem;
+    padding-left: 0.5rem;
+  }
+
+  .top-anime-list a {
+    color: #c7c7c7;
+    text-decoration: none;
+    transition: color 0.2s ease-out;
+    font-size: 0.95rem;
+    display: block;
+  }
+
+  .top-anime-list a:hover {
+    color: #fff;
+  }
+
+  .anime-thumbnail {
+    position: absolute;
+    right: 105%;
+    top: 50%;
+    transform: translateY(-50%) scale(0.8);
+    margin-right: 2.4rem;
+    width: 120px;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .top-anime-list li:hover .anime-thumbnail {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .toggle-list-button {
+    background: transparent;
+    border: none;
+    color: #60a5fa;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0;
+    margin-top: 1rem;
+    margin-left: -40px;
+    transition: color 0.2s ease-out;
+  }
+
+  .toggle-list-button:hover {
+    color: #a7c8ff;
+  }
+
   .scroll-to-top {
     position: fixed;
     bottom: 2rem;
@@ -776,522 +884,18 @@
     z-index: 1000;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   }
+
   .scroll-to-top.visible {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
+
   .scroll-to-top:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
   }
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 6rem 1rem 4rem;
-    position: relative;
-    z-index: 1;
-    box-sizing: border-box;
-  }
-  .container::before {
-    content: '';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 900px;
-    height: 900px;
-    background-image: radial-gradient(circle, rgba(29, 78, 216, .25) 0, rgba(0, 0, 0, 0) 55%);
-    transform: translate(-50%, -50%);
-    z-index: -2;
-  }
-  .background-effects {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-  }
-  .background-effects::before {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #e0eaff;
-    border-radius: 50%;
-    box-shadow: 0 0 15px 4px #a7c8ff, 0 0 25px 10px #60a5fa, 0 0 50px 20px rgba(29, 78, 216, .5);
-    animation: core-pulse 4s infinite ease-in-out;
-  }
-  @keyframes core-pulse {
-    0%, 100% {
-      transform: scale(.9);
-      opacity: .8;
-    }
-    50% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
-  }
-  .profile-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2.5rem;
-    max-width: 600px;
-    width: 100%;
-  }
-  .main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    width: 100%;
-  }
-  .pfp-container {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .profile-picture {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    position: relative;
-    z-index: 10;
-    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-  .profile-picture.slide-left {
-    transform: translateX(-160px);
-  }
-  .animated-content-wrapper {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 180px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .animated-text {
-    position: absolute;
-    font-size: 1.8rem;
-    font-weight: bold;
-    white-space: nowrap;
-    color: transparent;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-  }
-  .animated-text.visible {
-    opacity: 1;
-    transform: translateY(0);
-    background: linear-gradient(90deg, #ffffff 0%, #a7c8ff 50%, #dbeafe 100%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradientShift 3s ease-in-out infinite;
-  }
-  .animated-text::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    background: linear-gradient(90deg, #dbeafe 0%, #3b82f6 50%, #a7c8ff 100%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: blur(10px);
-    animation: gradientShift 3s ease-in-out infinite;
-  }
-  .fire-trail {
-    position: absolute;
-    bottom: 25%;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #dbeafe, #60a5fa, #dbeafe, transparent);
-    box-shadow: 0 0 8px 1px #a7c8ff, 0 0 15px 2px #3b82f6;
-    border-radius: 2px;
-    transform: scaleX(0);
-    opacity: 0;
-    transform-origin: right;
-    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-  .fire-trail.active {
-    animation: draw-in 0.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-  }
-  @keyframes draw-in {
-    from {
-      transform-origin: left;
-      transform: scaleX(0);
-      opacity: 0;
-    }
-    to {
-      transform-origin: left;
-      transform: scaleX(1);
-      opacity: 1;
-    }
-  }
-  .text-block {
-    background-color: rgba(25, 25, 30, .5);
-    padding: 1.2rem 1.5rem;
-    border-radius: 16px;
-    width: 100%;
-    border: 1px solid rgba(255, 255, 255, .15);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
-  }
-  :global(.text-block p) {
-    margin: 0 0 1rem;
-    line-height: 1.7;
-    font-size: .95rem;
-    text-align: left;
-  }
-  :global(.text-block p:last-child) {
-    margin-bottom: 0;
-  }
-  :global(.discord-link) {
-    color: #7289DA;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all .2s ease-in-out;
-    border-bottom: 2px solid transparent;
-  }
-  :global(.discord-link:hover) {
-    color: #99aab5;
-    border-bottom-color: #99aab5;
-  }
-  .social-links {
-    display: flex;
-    gap: 2.5rem;
-    justify-content: center;
-  }
-  .social-links a,
-  .social-links button {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 48px;
-    height: 48px;
-    transition: transform .3s cubic-bezier(.4, 0, .2, 1);
-    background: 0 0;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    font-family: inherit;
-    border-radius: 50%;
-  }
-  .social-links a::before,
-  .social-links button::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(150, 200, 255, .3) 0, rgba(29, 78, 216, .2) 50%, transparent 70%);
-    box-shadow: 0 0 15px rgba(29, 78, 216, .5), inset 0 0 10px rgba(255, 255, 255, .2);
-    animation: water-bubble 3s ease-in-out infinite;
-    z-index: -1;
-  }
-  .social-links a::after,
-  .social-links button::after {
-    content: '';
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 1px solid rgba(150, 200, 255, .3);
-    animation: ripple 2s ease-out infinite;
-    opacity: 0;
-    z-index: -2;
-  }
-  .social-links a img,
-  .social-links button img {
-    width: 28px;
-    height: 28px;
-    filter: brightness(0) invert(1);
-    transition: filter .3s ease-out, transform .3s cubic-bezier(.4, 0, .2, 1);
-  }
-  .social-links a:hover,
-  .social-links button:hover {
-    transform: translateY(-3px) scale(1.1);
-  }
-  .social-links a:hover::before,
-  .social-links button:hover::before {
-    animation: water-bubble-hover 1.5s cubic-bezier(.4, 0, .2, 1) infinite;
-  }
-  .social-links a:hover::after,
-  .social-links button:hover::after {
-    animation: ripple-hover 1.5s ease-out infinite;
-    opacity: .5;
-  }
-  .social-links a:hover img,
-  .social-links button:hover img {
-    filter: brightness(0) invert(1) drop-shadow(0 0 6px hsla(0, 0%, 100%, .9));
-  }
-  .social-links button span {
-    color: #a7c8ff;
-    font-size: .75rem;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  @keyframes water-bubble {
-    0%, 100% {
-      transform: scale(1) translateY(0);
-      opacity: .8;
-    }
-    50% {
-      transform: scale(1.05) translateY(-2px);
-      opacity: 1;
-    }
-  }
-  @keyframes water-bubble-hover {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: .9;
-    }
-  }
-  @keyframes ripple {
-    0%, 100% {
-      transform: scale(1);
-      opacity: .3;
-    }
-    100% {
-      transform: scale(1.5);
-      opacity: 0;
-    }
-  }
-  @keyframes ripple-hover {
-    0%, 100% {
-      transform: scale(1);
-      opacity: .5;
-    }
-    100% {
-      transform: scale(1.6);
-      opacity: 0;
-    }
-  }
-  .languages-section {
-    width: 100%;
-    max-width: 600px;
-  }
-  .languages-section h2 {
-    text-align: left;
-    margin-bottom: 2rem;
-    font-size: 1.2rem;
-    color: #f0f0f0;
-  }
-  .languages-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: center;
-  }
-  .language-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  .language-card {
-    background-color: rgba(25, 25, 30, .5);
-    border: 1px solid rgba(255, 255, 255, .15);
-    border-radius: 16px;
-    padding: 1.2rem 1rem;
-    transition: all .3s ease-in-out;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    min-width: 140px;
-    position: relative;
-    overflow: hidden;
-  }
-  .language-card::after {
-    content: '';
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 120%, hsla(from var(--glow-color) h s l / .35) 0, transparent 60%);
-    opacity: 0;
-    transition: opacity .4s ease-out;
-  }
-  .language-icon,
-  .language-info {
-    position: relative;
-    z-index: 1;
-  }
-  .language-card:hover {
-    transform: translateY(-5px);
-    border-color: hsla(from var(--glow-color) h s l / .5);
-  }
-  .language-card:hover::after {
-    opacity: 1;
-  }
-  .language-icon {
-    font-size: 2.2rem;
-    margin-bottom: .8rem;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, .2));
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-8px);
-    }
-  }
-  .language-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  .language-name-row {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-  }
-  .language-info h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #f0f0f0;
-    font-weight: 600;
-  }
-  .language-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(255, 255, 255, .3);
-  }
-  .projects-section {
-    width: 100%;
-    max-width: 600px;
-  }
-  .projects-section h2 {
-    text-align: left;
-    margin-bottom: 2rem;
-    font-size: 1.2rem;
-    color: #f0f0f0;
-  }
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-  .anime-section,
-  .top-anime-section {
-    width: 100%;
-    max-width: 600px;
-    background-color: rgba(25, 25, 30, .5);
-    padding: 1.2rem 1.8rem;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, .15);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
-  }
-  .anime-section p {
-    margin: 0;
-    line-height: 1.7;
-    text-align: left;
-    font-size: .95rem;
-  }
-  :global(.mal-icon) {
-    width: 18px;
-    height: 18px;
-    vertical-align: middle;
-    margin: 0 4px;
-    transition: transform .2s ease-out;
-    filter: brightness(0) invert(1);
-  }
-  :global(.mal-icon:hover) {
-    transform: scale(1.2);
-  }
-  .top-anime-section h2 {
-    text-align: left;
-    margin: 0 0 1.5rem;
-    font-size: 1.2rem;
-    color: #f0f0f0;
-  }
-  .top-anime-list {
-    list-style: decimal;
-    margin: 0;
-    padding-left: 1.8rem;
-    overflow: visible;
-  }
-  .top-anime-list li {
-    position: relative;
-    margin-bottom: .8rem;
-    padding-left: .5rem;
-  }
-  .top-anime-list a {
-    color: #c7c7c7;
-    text-decoration: none;
-    transition: color .2s ease-out;
-    font-size: .95rem;
-    display: block;
-  }
-  .top-anime-list a:hover {
-    color: #fff;
-  }
-  .anime-thumbnail {
-    position: absolute;
-    right: 105%;
-    top: 50%;
-    transform: translateY(-50%) scale(.8);
-    margin-right: 2.4rem;
-    width: 120px;
-    height: 170px;
-    object-fit: cover;
-    border-radius: 6px;
-    border: 2px solid rgba(255, 255, 255, .3);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, .5);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .2s ease-out, transform .2s ease-out, visibility .2s;
-    pointer-events: none;
-    z-index: 10;
-  }
-  .top-anime-list li:hover .anime-thumbnail {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-50%) scale(1);
-  }
-  .toggle-list-button {
-    background: 0 0;
-    border: none;
-    color: #60a5fa;
-    cursor: pointer;
-    font-size: .9rem;
-    font-weight: 600;
-    padding: 0;
-    margin-top: 1rem;
-    transition: color .2s ease-out;
-    margin-left: -40px;
-  }
-  .toggle-list-button:hover {
-    color: #a7c8ff;
-  }
+
   @media (max-width: 767px) {
     .header-content {
       padding: 1rem;
@@ -1300,36 +904,46 @@
       justify-content: space-between;
       align-items: center;
     }
+
     .desktop-nav {
       display: none;
     }
+
     .mobile-menu-btn {
       display: flex;
     }
+
     .mobile-nav {
       display: none;
     }
+
     .mobile-nav.open {
       display: flex;
     }
+
     .footer-content {
       grid-template-columns: 1fr;
       text-align: center;
       gap: 1.5rem;
     }
+
     .footer-logo {
       justify-content: center;
     }
+
     .footer-bottom {
       justify-content: center;
     }
+
     .footer-bottom-content {
       align-items: center;
       text-align: center;
     }
+
     .social-links-footer {
       justify-content: center;
     }
+
     .scroll-to-top {
       bottom: 1rem;
       right: 1rem;
@@ -1337,72 +951,90 @@
       height: 45px;
       font-size: 1.3rem;
     }
+
     .container {
       padding: 5rem 1.5rem 2.5rem;
     }
+
     .profile-card {
       gap: 1.8rem;
       max-width: 100%;
     }
+
     .main-content {
       gap: 1rem;
     }
+
     .pfp-container {
       width: 80px;
       height: 80px;
     }
+
     .profile-picture.slide-left {
       transform: translateX(-110px);
     }
+
     .animated-content-wrapper {
       width: 140px;
     }
+
     .animated-text {
       font-size: 1.3rem;
     }
+
     .animated-text::after {
       filter: blur(8px);
     }
+
     .text-block,
     .anime-section,
     .top-anime-section {
       padding: 1.2rem;
       border-radius: 14px;
     }
+
     :global(.text-block p),
     :global(.anime-section p) {
-      font-size: .875rem;
+      font-size: 0.875rem;
       line-height: 1.6;
     }
+
     .top-anime-list li,
     .top-anime-list a {
-      font-size: .875rem;
+      font-size: 0.875rem;
     }
+
     .top-anime-list li {
-      padding-left: .2rem;
-      margin-bottom: .5rem;
+      padding-left: 0.2rem;
+      margin-bottom: 0.5rem;
     }
+
     .top-anime-list {
       padding-left: 1.4rem;
     }
+
     .social-links {
       gap: 1.8rem;
     }
+
     .social-links a,
     .social-links button {
       width: 40px;
       height: 40px;
     }
+
     .social-links a img,
     .social-links button img {
       width: 22px;
       height: 22px;
     }
+
     .social-links a::after,
     .social-links button::after {
       width: 50px;
       height: 50px;
     }
+
     .languages-section h2,
     .top-anime-section h2,
     .projects-section h2 {
@@ -1410,44 +1042,54 @@
       margin-bottom: 1.2rem;
       text-align: center;
     }
+
     .languages-grid {
-      gap: .8rem;
+      gap: 0.8rem;
       justify-content: center;
     }
+
     .language-card {
       min-width: 100px;
       max-width: 120px;
-      padding: .8rem;
+      padding: 0.8rem;
     }
+
     .language-icon {
       font-size: 1.7rem;
     }
+
     .language-info h3 {
-      font-size: .9rem;
+      font-size: 0.9rem;
     }
+
     .language-dot {
       width: 8px;
       height: 8px;
     }
+
     .projects-grid {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
+
     .toggle-list-button {
-      font-size: .8rem;
-      margin-top: .8rem;
+      font-size: 0.8rem;
+      margin-top: 0.8rem;
       margin-left: -20px;
     }
+
     .container::before {
       width: 350px;
       height: 350px;
-      background-image: radial-gradient(circle, rgba(29, 78, 216, .2) 0, rgba(0, 0, 0, 0) 65%);
+      background-image: radial-gradient(circle, rgba(29, 78, 216, 0.2) 0, rgba(0, 0, 0, 0) 65%);
     }
+
     .background-effects::before {
       width: 4px;
       height: 4px;
       box-shadow: 0 0 8px 2px #a7c8ff, 0 0 15px 6px #60a5fa;
     }
+
     .anime-thumbnail {
       display: none;
     }
