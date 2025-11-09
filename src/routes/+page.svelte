@@ -179,6 +179,18 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Portofoliu SethDev">
   <meta name="theme-color" content="#1d4ed8">
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2CZ9SFQ8JK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2CZ9SFQ8JK');
+</script>
+
 </svelte:head>
 
 <div class="container">
