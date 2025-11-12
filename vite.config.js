@@ -7,5 +7,7 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
+    middlewareMode: false,
   },
+  assetsInclude: ['**/*.svg'],
 });

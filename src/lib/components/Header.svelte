@@ -73,6 +73,7 @@
     backdrop-filter: blur(20px); 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
     transition: background 0.3s ease, box-shadow 0.3s ease; 
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.3);
   }
   .main-header.scrolled { 
     background: rgba(0, 0, 0, 0.95); 

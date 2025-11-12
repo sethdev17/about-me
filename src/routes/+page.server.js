@@ -56,8 +56,8 @@ const topAnime = [
 /** @param {typeof fetch} fetchFunc */
 async function getGithubProjects(fetchFunc) {
   try {
-    if (!GITHUB_TOKEN || !GITHUB_TOKEN.startsWith('ghp_')) {
-      console.error('EROARE CRITICĂ: GITHUB_TOKEN nu a fost găsit sau este invalid în mediul de rulare!');
+    if (!GITHUB_TOKEN || GITHUB_TOKEN === 'ghp_YOUR_TOKEN_HERE' || !GITHUB_TOKEN.startsWith('ghp_')) {
+      console.warn('⚠️ GITHUB_TOKEN nu a fost configurat. Adaugă un token în .env.local pentru a vedea proiectele GitHub.');
       return [];
     }
 

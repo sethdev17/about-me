@@ -321,7 +321,7 @@
   on:click={scrollToTop}
   aria-label="Scroll to top"
 >
-  ⮝
+  🠉
 </button>
 
 <style>
