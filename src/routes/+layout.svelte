@@ -2,9 +2,48 @@
 <script>
     import Header from '$lib/components/Header.svelte';
     import Footer from '$lib/components/Footer.svelte';
+    import { language } from '$lib/stores.js';
     
-    // `data` vine de la `+page.svelte` (sau server)
     export let data;
+
+    // Translation object - same as in +page.svelte
+    const translations = {
+      ro: {
+        navAbout: 'Despre Mine',
+        navProjects: 'Proiecte',
+        navAnime: 'Lista Anime',
+        navContact: 'Contact',
+        footerRights: '© 2025 SethDev. Toate drepturile rezervate.',
+        footerFollow: 'Contact',
+        footerHome: 'Acasă',
+        footerThoughts: 'Gândurile mele',
+        footerCopied: 'Copiat!',
+        footerEmailSend: 'Trimite un email',
+        footerEmailCopy: 'Copiaza adresa de email'
+      },
+      en: {
+        navAbout: 'About Me',
+        navProjects: 'Projects',
+        navAnime: 'Anime List',
+        navContact: 'Contact',
+        footerRights: '© 2025 SethDev. All rights reserved.',
+        footerFollow: 'Contact',
+        footerHome: 'Home',
+        footerThoughts: 'My Thoughts',
+        footerCopied: 'Copied!',
+        footerEmailSend: 'Send an email',
+        footerEmailCopy: 'Copy email address'
+      }
+    };
+
+    let currentLang = 'ro';
+    let t = translations.ro;
+
+    // Subscribe to language changes
+    language.subscribe(newLang => {
+      currentLang = newLang;
+      t = translations[newLang] || translations.ro;
+    });
 </script>
 
 <svelte:head>
@@ -17,7 +56,7 @@
 <div class="page-wrapper">
     <!-- Pasăm fiecare prop explicit. Asta rezolvă problema! -->
     <Header 
-      t={data.t} 
+      t={t}
       currentSection={data.currentSection} 
       scrollToSection={data.scrollToSection}
     />
@@ -28,9 +67,7 @@
     
     <!-- La fel și aici, pasăm props explicit. -->
     <Footer 
-      t={data.t} 
-      lang={data.lang} 
-      setLanguage={data.setLanguage}
+      t={t}
     />
 </div>
 

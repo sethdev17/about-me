@@ -34,7 +34,12 @@
       navAnime: 'Lista Anime',
       navContact: 'Contact',
       footerRights: '© 2025 SethDev. Toate drepturile rezervate.',
-      footerFollow: 'Contact'
+      footerFollow: 'Contact',
+      footerHome: 'Acasă',
+      footerThoughts: 'Gândurile mele',
+      footerCopied: 'Copiat!',
+      footerEmailSend: 'Trimite un email',
+      footerEmailCopy: 'Copiaza adresa de email'
     },
     en: {
       title: 'SethDev | About Me',
@@ -59,7 +64,12 @@
       navAnime: 'Anime List',
       navContact: 'Contact',
       footerRights: '© 2025 SethDev. All rights reserved.',
-      footerFollow: 'Contact'
+      footerFollow: 'Contact',
+      footerHome: 'Home',
+      footerThoughts: 'My Thoughts',
+      footerCopied: 'Copied!',
+      footerEmailSend: 'Send an email',
+      footerEmailCopy: 'Copy email address'
     }
   };
 
@@ -909,52 +919,7 @@
   }
 
   @media (max-width: 767px) {
-    .header-content {
-      padding: 1rem;
-      grid-template-columns: auto 1fr auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
 
-    .desktop-nav {
-      display: none;
-    }
-
-    .mobile-menu-btn {
-      display: flex;
-    }
-
-    .mobile-nav {
-      display: none;
-    }
-
-    .mobile-nav.open {
-      display: flex;
-    }
-
-    .footer-content {
-      grid-template-columns: 1fr;
-      text-align: center;
-      gap: 1.5rem;
-    }
-
-    .footer-logo {
-      justify-content: center;
-    }
-
-    .footer-bottom {
-      justify-content: center;
-    }
-
-    .footer-bottom-content {
-      align-items: center;
-      text-align: center;
-    }
-
-    .social-links-footer {
-      justify-content: center;
-    }
 
     .scroll-to-top {
       bottom: 1rem;

@@ -3,8 +3,6 @@
   import { onMount } from 'svelte';
 
   export let t = {};
-  export let lang = 'ro';
-  export let setLanguage = () => {};
 
   $: onHomePage = $page.url.pathname === '/';
 
@@ -31,9 +29,9 @@
         <span class="logo-text">SethDev</span>
       </a>
       {#if $page.url.pathname.startsWith('/gânduri')}
-        <a href="/" class="footer-page-link">Acasă</a>
+        <a href="/" class="footer-page-link">{t?.footerHome || 'Acasă'}</a>
       {:else}
-        <a href="/gânduri" class="footer-page-link">Gândurile mele</a>
+        <a href="/gânduri" class="footer-page-link">{t?.footerThoughts || 'Gândurile mele'}</a>
       {/if}
     </div>
 
@@ -48,13 +46,13 @@
         </a>
 
         {#if isTouchDevice}
-          <a href="mailto:{myEmail}" aria-label="Trimite un email">
+          <a href="mailto:{myEmail}" aria-label="{t?.footerEmailSend || 'Trimite un email'}">
             <img src="/images/email.svg" alt="Email Icon" />
           </a>
         {:else}
-          <button class="copy-email-button" on:click={copyEmail} aria-label="Copiaza adresa de email" type="button">
+          <button class="copy-email-button" on:click={copyEmail} aria-label="{t?.footerEmailCopy || 'Copiaza adresa de email'}" type="button">
             {#if emailCopied}
-              <span class="copied-text">✓ Copiat!</span>
+              <span class="copied-text">✓ {t?.footerCopied || 'Copiat!'}</span>
             {:else}
               <img src="/images/email.svg" alt="Email Icon" />
             {/if}
@@ -69,8 +67,6 @@
 
     <div class="footer-section footer-bottom">
       <div class="footer-bottom-content">
-        {#if onHomePage}
-        {/if}
         <p class="footer-rights">{t?.footerRights || `© ${new Date().getFullYear()} SethDev. Toate drepturile rezervate.`}</p>
       </div>
     </div>
@@ -219,32 +215,7 @@
     white-space: nowrap;
   }
 
-  .language-switcher {
-    display: flex;
-    gap: 0.5rem;
-  }
 
-  .lang-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #c7c7c7;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-  }
-
-  .lang-btn:hover {
-    background: rgba(96, 165, 250, 0.2);
-    color: #ffffff;
-  }
-
-  .lang-btn.active {
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    color: #ffffff;
-    border-color: transparent;
-  }
 
   @media (max-width: 767px) {
     .footer-content {
