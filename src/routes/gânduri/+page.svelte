@@ -233,30 +233,102 @@
   }
 
   /* Responsivitate pentru telefon */
-  @media (max-width: 767px) {
+   @media (max-width: 767px) {
     .ganduri-page-wrapper {
       padding: 6rem 1.25rem 3rem;
     }
+    
     .neon-title {
       font-size: 2.1rem;
       margin-bottom: 0.9rem;
+      /* REDUCE EFECTELE NEON */
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.8),
+                   0 0 8px rgba(96, 165, 250, 0.6);
+      filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.12));
+      /* OPREȘTE ANIMAȚIILE */
+      animation: none;
     }
+    
+    .neon-title::after {
+      /* ASCUNDE COMPLET HALO pe mobil */
+      display: none;
+    }
+
+    /* REDUCE WAVES pe mobil */
+    .wave {
+      /* Mai mici și mai puțin vizibile */
+      opacity: 0.08 !important;
+    }
+    .wave:nth-child(1) {
+      width: 600px;
+      height: 600px;
+      top: 15%;
+      left: 5%;
+    }
+    .wave:nth-child(2) {
+      width: 500px;
+      height: 500px;
+      top: 70%;
+      left: 65%;
+    }
+    .wave:nth-child(3) {
+      width: 400px;
+      height: 400px;
+      top: 50%;
+      left: 50%;
+    }
+
+    /* REDUCE EFECTELE LA LINK-URI */
+    .lista-ganduri li a {
+      padding: 0.9rem 1.5rem;
+      transition: background-color 150ms ease, transform 120ms ease;
+      /* TRANSFORM SIMPLIFICAT */
+      transform: none;
+    }
+    
+    .lista-ganduri li a:hover {
+      background-color: rgba(78, 143, 249, 0.06);
+      transform: translateY(-1px); /* Doar mișcare mică */
+      box-shadow: 0 4px 12px rgba(28, 113, 250, 0.08);
+    }
+    
+    .lista-ganduri li a::before {
+      width: 4px;
+      box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
+    }
+
     .intro {
       font-size: 0.95rem;
       max-width: 92%;
     }
+    
     .lista-ganduri ul {
       gap: 0.6rem;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  /* FORȚEAZĂ REDUCED MOTION PENTRU MOBILE WEAK */
+  @media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
     .neon-title,
     .neon-title::after,
-    .lista-ganduri li a,
-    .glow-dot {
-      animation: none !important;
-      transition: none !important;
+    .lista-ganduri li a {
+      transition-duration: 100ms !important;
+    }
+  }
+
+  /* DISABLE COMPLET pe VERY LOW END */
+  @media (max-width: 480px) {
+    .ganduri-background-effects {
+      display: none; /* Fără waves deloc */
+    }
+    
+    .neon-title {
+      background: none;
+      -webkit-background-clip: initial;
+      background-clip: initial;
+      color: #eaf6ff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      filter: none;
     }
   }
 </style>
