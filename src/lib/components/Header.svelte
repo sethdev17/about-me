@@ -12,6 +12,14 @@
 
     let isMenuOpen = false;
     let isScrolled = false;
+    let mobileNav;
+    let menuBtn;
+
+    function handleClickOutside(e) {
+      if (mobileNav && !mobileNav.contains(e.target) && menuBtn && !menuBtn.contains(e.target)) {
+        isMenuOpen = false;
+      }
+    }
     
     // Suprascriem funcția `scrollToSection` pentru a include închiderea meniului
     const _scrollToSection = scrollToSection; // Salvăm funcția originală primită ca prop
@@ -26,7 +34,11 @@
     
     onMount(() => {
         window.addEventListener('scroll', handleGlobalScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleGlobalScroll);
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            window.removeEventListener('scroll', handleGlobalScroll);
+            document.removeEventListener('click', handleClickOutside);
+        };
     });
 </script>
 
@@ -43,7 +55,7 @@
                 <button class="nav-link" class:active={currentSection === 'anime'} on:click={() => scrollToSection('anime')}>{t.navAnime || 'Anime'}</button>
                 <button class="nav-link" class:active={currentSection === 'contact'} on:click={() => scrollToSection('contact')}>{t.navContact || 'Contact'}</button>
             </nav>
-            <button class="mobile-menu-btn" on:click={() => isMenuOpen = !isMenuOpen} aria-label="Toggle Menu">
+                <button bind:this={menuBtn} class="mobile-menu-btn" on:click={() => isMenuOpen = !isMenuOpen} aria-label="Toggle Menu">
                 <div class="hamburger" class:active={isMenuOpen}></div>
                 <div class="hamburger" class:active={isMenuOpen}></div>
                 <div class="hamburger" class:active={isMenuOpen}></div>
@@ -52,7 +64,7 @@
     </div>
 
     {#if isMenuOpen && onHomePage}
-        <nav class="mobile-nav" transition:slide={{ duration: 200 }}>
+        <nav bind:this={mobileNav} class="mobile-nav" transition:slide={{ duration: 200 }}>
             <button class="mobile-nav-link" on:click={() => scrollToSection('about')}>{t.navAbout || 'Despre'}</button>
             <button class="mobile-nav-link" on:click={() => scrollToSection('projects')}>{t.navProjects || 'Proiecte'}</button>
             <button class="mobile-nav-link" on:click={() => scrollToSection('anime')}>{t.navAnime || 'Anime'}</button>
@@ -84,7 +96,7 @@
     justify-content: space-between; 
     align-items: center; 
     padding: 1rem 2rem; 
-    max-width: 1200px; 
+    max-width: auto; 
     margin: 0 auto; 
   }
   .logo { 

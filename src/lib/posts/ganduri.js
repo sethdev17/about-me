@@ -13,7 +13,7 @@ Iubirea, în forma ei autentică, nu este o posesie. Nu este o victorie și nici
 <h1>Cele Patru Acte ale Iubirii Adevărate</h1>
 <p class="fara-alineat"><b>Actul I – Grădina Interioară</b></p>
 
-<p>Înainte de a iubi pe altcineva, ești chemat să îți cultivi sufletul. Imaginează-ți că e un pământ fertil, neatins. Ce vei planta în el? Pasiunile tale, visurile pe care le porți, micile bucurii care te fac să tresari – toate acestea sunt semințele. Udă-le cu prietenii autentice, cu momente de singurătate în care te asculți, cu curajul de a-ți privi umbrele și lumina deopotrivă.
+<p>Înainte de a iubi pe altcineva, ești chemat să îți cultivi sufletul. Imaginează-ți că e un pământ fertil, neatins. Ce vei planta în el? Pasiunile tale, visurile pe care le porți, micile bucurii care te fac să tresari, toate acestea sunt semințele. Udă-le cu prietenii autentice, cu momente de singurătate în care te asculți, cu curajul de a-ți privi umbrele și lumina deopotrivă.
 
 Partenerul tău nu este un salvator și nici grădinarul care trebuie să repare ce nu ai îngrijit. El este un oaspete de onoare, care intră într-un univers deja plin de frumusețe. Dacă grădina ta este săracă și uscată, vei aștepta de la celălalt să o umple, și atunci iubirea devine dependență. Dar dacă grădina ta este vie și înfloritoare, dragostea pe care o oferi devine dar, nu cerere.</p>
 
@@ -21,27 +21,27 @@ Partenerul tău nu este un salvator și nici grădinarul care trebuie să repare
 
 <p>Când porțile grădinii se deschid, începe dansul apropierii. Intimitatea nu este o performanță, nu e un loc unde se dau note. Ea este un limbaj secret, vorbit în liniștea privirilor, în respectul gesturilor și în răbdarea de a asculta.
 
-Sexualitatea, atunci, încetează să fie un simplu act fizic și se transformă în poezie. Este unirea trupului, a inimii și a minții, o punte care se clădește prin încredere și consimțământ. Consimțământul adevărat nu înseamnă un „da” spus din obligație, ci o participare entuziastă, un dans comun în care amândoi spun: „Sunt aici cu toată ființa mea.”
+Actul sexual, atunci, încetează să fie un simplu act fizic și se transformă în poezie. Este unirea trupului, a inimii și a minții, o punte care se clădește prin încredere și consimțământ. Consimțământul adevărat nu înseamnă un „da” spus din obligație, ci o participare entuziastă, un dans comun în care amândoi spun: „Sunt aici cu toată ființa mea.”
 
-Această apropiere nu se clădește din întâmplare. Ea se naște din alegeri mici și repetate: respect, atenție, grijă zilnică. Intimitatea este, de fapt, un ritual sacru care se hrănește din gesturile simple – un zâmbet, o mână ținută strâns, o tăcere împărtășită.</p>
+Această apropiere nu se clădește din întâmplare. Ea se naște din alegeri mici și repetate: respect, atenție, grijă zilnică. Intimitatea este, de fapt, un ritual sacru care se hrănește din gesturile simple, un zâmbet, o mână ținută strâns, o tăcere împărtășită.</p>
 
 <p class="fara-alineat"><b>Actul III – Metamorfoza durerii</b></p>
 
-<p>Dar chiar și cele mai frumoase grădini pot fi atinse de furtună. Uneori, poveștile se încheie. Și atunci, inima simte că se sfărâmă. E important să știm: nu vom reîncepe „ușor” să iubim, ci vom reîncepe „altfel”.
+<p>Dar chiar și cele mai frumoase grădini pot fi atinse de furtună. Uneori, poveștile se încheie. Și atunci, inima simte că se sfărâmă. E important să știm că nu vom reîncepe „ușor” să iubim, ci vom reîncepe „altfel”.
 
-Durerea este dovada că iubirea a fost reală. Inima seamănă cu un copac lovit de trăsnet: cicatricea rămâne, dar ea nu o oprește din creștere. Ramurile se întind din nou spre soare, purtând semnul rănii ca parte a propriei istorii.
+Durerea este dovada că iubirea a fost reală. Inima seamănă cu un copac lovit de trăsnet, cicatricea rămâne, dar ea nu o oprește din creștere. Ramurile se întind din nou spre soare, purtând semnul rănii ca parte a propriei istorii.
 
-Nu trebuie să îți rupi iubirea din tine pentru a merge mai departe. Trebuie doar să o transformi. Din „iubire parteneră” ea devine „iubire-rămas-bun” – o formă de recunoștință pentru ceea ce a fost. Atunci când îl întâlnești din nou pe cel care a plecat, oferă un salut demn. Nu ignoranță rece, nu ostilitate, ci o recunoaștere simplă: „Ai făcut parte din povestea mea, și îți mulțumesc pentru asta.”
+Nu trebuie să îți rupi iubirea din tine pentru a merge mai departe. Trebuie doar să o transformi. Din „iubire parteneră” ea devine „iubire de rămas-bun”, o formă de recunoștință pentru ceea ce a fost. Atunci când îl întâlnești din nou pe cel care a plecat, oferă un salut demn. Nu ignoranță rece, nu ostilitate, ci o recunoaștere simplă, „Ai făcut parte din povestea mea, și îți mulțumesc pentru asta.”
 
 Durerea, transformată, nu mai este o povară, ci un strat nou de pământ fertil în grădina sufletului.</p>
 
 <p class="fara-alineat"><b>Actul IV – Înțelepciunea călătoriei</b></p>
 
-<p>După furtună, vine un alt act: cel al înțelepciunii. Îți dai seama că viața ta este un roman, și iubirea tema centrală a fiecărui capitol. Fiecare relație este o filă esențială, dar niciuna nu este cartea întreagă.
+<p>După furtună, vine un alt act, cel al înțelepciunii. Îți dai seama că viața ta este un roman, și iubirea tema centrală a fiecărui capitol. Fiecare relație este o filă esențială, dar niciuna nu este cartea întreagă.
 
 Să mergi mai departe nu înseamnă să trădezi trecutul, ci să-l onorezi. Să intri într-o nouă iubire nu înseamnă să uiți pe cineva, ci să cunoști o altă ființă. Vindecarea nu se face prin ștergere, ci prin integrare.
 
-Uneori, în călătoria ta, vei simți că un capitol vechi merită rescris. O a doua șansă poate fi un act de curaj, dar trebuie să fie reală: să se bazeze pe faptul că despărțirea a fost cauzată de împrejurări, nu de temelii greșite. Și doar dacă amândoi vă reîntâlniți ca versiuni mai mature, gata să clădiți o poveste complet nouă, nu să repetați trecutul.
+Uneori, în călătoria ta, vei simți că un capitol vechi merită rescris. O a doua șansă poate fi un act de curaj, dar trebuie să fie reală, să se bazeze pe faptul că despărțirea a fost cauzată de împrejurări, nu de temelii greșite. Și doar dacă amândoi vă reîntâlniți ca versiuni mai mature, gata să clădiți o poveste complet nouă, nu să repetați trecutul.
 </p>
 
 <p class="fara-alineat">Arta iubirii este, de fapt, arta de a trăi. Ea nu constă în a găsi o singură persoană și a îngheța lângă ea în timp, ci în a-ți cultiva mai întâi propria grădină interioară până devine un loc de frumusețe și pace. Apoi, în a avea curajul să o deschizi, să iubești cu toată ființa, să accepți suferința atunci când apare și să transformi fiecare rană în pământ fertil pentru viitor.
@@ -53,7 +53,7 @@ Unele cărți se citesc o singură dată. Altele merită recitite. Și câteva, 
     {
         slug: 'puterea-vulnerabilitatii',
         title: 'Puterea vulnerabilității',
-        content: `<p>Într-o lume care adesea celebrează forța și invulnerabilitatea, vulnerabilitatea este adesea percepută ca un semn de slăbiciune. Cu toate acestea, adevărata putere nu constă în a ne ascunde emoțiile sau în a pretinde că suntem invincibili, ci în a avea curajul să fim autentici, să ne arătăm așa cum suntem cu adevărat, cu toate imperfecțiunile noastre. Vulnerabilitatea este puntea care ne conectează cu ceilalți la un nivel profund. Când ne deschidem și împărtășim fricile, speranțele și visele noastre, creăm spațiu pentru intimitate și înțelegere reciprocă. Este în aceste momente de sinceritate că relațiile noastre devin mai puternice și mai autentice.     </p><p>Vulnerabilitatea ne permite să ne eliberăm de măștile pe care le purtăm pentru a ne proteja de judecată și respingere. Când renunțăm la aceste măști, ne permitem să fim văzuți cu adevărat, să fim iubiți pentru cine suntem, nu pentru cine pretindem că suntem. Aceasta este esența conexiunii umane – să fim văzuți și acceptați în totalitatea noastră. </p>`,                    
+        content: `<p>Într-o lume care adesea celebrează forța și invulnerabilitatea, vulnerabilitatea este adesea percepută ca un semn de slăbiciune. Cu toate acestea, adevărata putere nu constă în a ne ascunde emoțiile sau în a pretinde că suntem invincibili, ci în a avea curajul să fim autentici, să ne arătăm așa cum suntem cu adevărat, cu toate imperfecțiunile noastre. Vulnerabilitatea este puntea care ne conectează cu ceilalți la un nivel profund. Când ne deschidem și împărtășim fricile, speranțele și visele noastre, creăm spațiu pentru intimitate și înțelegere reciprocă. În aceste momente de sinceritate, relațiile noastre devin mai puternice și mai autentice.     </p><p>Vulnerabilitatea ne permite să ne eliberăm de măștile pe care le purtăm pentru a ne proteja de judecată și respingere. Când renunțăm la aceste măști, ne permitem să fim văzuți cu adevărat, să fim iubiți pentru cine suntem, nu pentru cine pretindem că suntem. Aceasta este esența conexiunii umane. Să fim văzuți și acceptați în totalitatea noastră. </p>`,                    
         backgroundImage: '/backgrounds/vulnerabilitate.jpg' // Schimbă cu numele real al imaginii tale
         },
 ];

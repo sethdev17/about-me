@@ -21,7 +21,7 @@
         {#each data.summaries as post (post.slug)}
           <li>
             <a href={"/gânduri/" + post.slug}>
-              <span class="glow-dot"></span>
+              
               {post.title}
             </a>
           </li>
@@ -63,7 +63,6 @@
     z-index: 1;
   }
 
-  /* RESTUL CODULUI TĂU STILIZAT, PE CARE ÎL ȘTII DEJA */
   .wave {
     position: absolute;
     border-radius: 50%;
@@ -194,7 +193,7 @@
     gap: 1rem;
     color: #e6eefc;
     text-decoration: none;
-    padding: 0.95rem 1rem;
+    padding: 1rem 2rem;
     border-radius: 12px;
     transition:
       background-color 200ms ease,
@@ -218,24 +217,14 @@
     background: linear-gradient(180deg, #60a5fa, #3b82f6);
     border-radius: 4px;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
-    opacity: 0.95;
+    opacity: 1;
   }
 
   .lista-ganduri li a:hover {
-    background-color: rgba(59, 130, 246, 0.08);
+    background-color: rgba(78, 143, 249, 0.08);
     color: #fff;
     transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(59, 130, 246, 0.12);
-  }
-
-  .glow-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #60a5fa;
-    border-radius: 50%;
-    box-shadow: 0 0 12px rgba(96, 165, 250, 0.95);
-    flex-shrink: 0;
-    transition: transform 160ms ease, box-shadow 160ms ease;
+    box-shadow: 0 10px 28px rgba(28, 113, 250, 0.12);
   }
 
   .lista-ganduri li a:hover .glow-dot {
@@ -243,7 +232,7 @@
     box-shadow: 0 0 18px rgba(96, 165, 250, 0.95);
   }
 
-  /* Răspunsivitate păstrată */
+  /* Responsivitate pentru telefon */
   @media (max-width: 767px) {
     .ganduri-page-wrapper {
       padding: 6rem 1.25rem 3rem;
@@ -258,10 +247,6 @@
     }
     .lista-ganduri ul {
       gap: 0.6rem;
-    }
-    .glow-dot {
-      width: 9px;
-      height: 9px;
     }
   }
 

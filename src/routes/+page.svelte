@@ -331,8 +331,9 @@
   on:click={scrollToTop}
   aria-label="Scroll to top"
 >
-  🠉
+  <span class="arrow"></span>
 </button>
+
 
 <style>
   :global(body) {
@@ -517,7 +518,8 @@
     background-color: rgba(25, 25, 30, 0.5);
     padding: 1.2rem 1.5rem;
     border-radius: 16px;
-    width: 100%;
+    width: 750px;
+    max-width: 1000px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -887,36 +889,56 @@
   }
 
   .scroll-to-top {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.5rem;
-    font-weight: bold;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-  }
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .scroll-to-top.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
+.scroll-to-top .arrow {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border-top: 3px solid #fff;
+  border-left: 3px solid #fff;
+  transform: rotate(45deg);
+  transition: all 250ms ease-in-out;
+  top: 5px;
+  left: auto;
+}
 
-  .scroll-to-top:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-  }
+.scroll-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.scroll-to-top:hover .arrow {
+  border-color: #f0f0f0;
+  border-width: 4px;
+}
+
 
   @media (max-width: 767px) {
 
@@ -926,7 +948,7 @@
       right: 1rem;
       width: 45px;
       height: 45px;
-      font-size: 1.3rem;
+      font-size: 1rem;
     }
 
     .container {
@@ -963,11 +985,19 @@
       filter: blur(8px);
     }
 
-    .text-block,
+    .text-block {
+      width: auto;
+      max-width: 380px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
     .anime-section,
     .top-anime-section {
-      padding: 1.2rem;
-      border-radius: 14px;
+      width: auto;
+      max-width: 600px;
+      margin-left: 0;
+      margin-right: 0;
     }
 
     :global(.text-block p),
