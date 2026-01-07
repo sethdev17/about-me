@@ -234,63 +234,68 @@
 
   /* Responsivitate pentru telefon */
    @media (max-width: 767px) {
-    .ganduri-page-wrapper {
-      padding: 6rem 1.25rem 3rem;
-    }
-    
-    .neon-title {
-      font-size: 2.1rem;
-      margin-bottom: 0.9rem;
-      /* REDUCE EFECTELE NEON */
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0.8),
-                   0 0 8px rgba(96, 165, 250, 0.6);
-      filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.12));
-      /* OPREȘTE ANIMAȚIILE */
-      animation: none;
-    }
-    
-    .neon-title::after {
-      /* ASCUNDE COMPLET HALO pe mobil */
-      display: none;
-    }
+  .ganduri-page-wrapper {
+    padding: 6rem 1.25rem 3rem;
+  }
+  
+  .neon-title {
+    font-size: 2.1rem;
+    margin-bottom: 0.9rem;
+    /* EFECTE SLABE dar VIZIBIL */
+    color: #eaf6ff; /* Culoare solidă de bază */
+    background: linear-gradient(90deg, #ffffff 0%, #a7c8ff 35%, #60a5fa 65%, #dbeafe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Umbre MINIME pentru vizibilitate */
+    text-shadow: 
+      0 0 4px rgba(255, 255, 255, 0.6),
+      0 0 8px rgba(96, 165, 250, 0.4);
+    filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.15));
+    animation: none; /* Fără puls */
+  }
+  
+  /* Halo SIMPLIFICAT pe mobil - mai mic și slab */
+  .neon-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: calc(50% - 0.2rem);
+    transform: translate(-50%, -50%);
+    width: 140%; /* Redus de la 200% */
+    height: 90%;
+    border-radius: 30%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(96, 165, 250, 0.15) 0%,  /* Mult mai slab */
+      rgba(59, 130, 246, 0.06) 30%,
+      transparent 50%
+    );
+    filter: blur(12px); /* Blur mai mic */
+    opacity: 0.6; /* Vizibil dar slab */
+    z-index: -1;
+  }
 
-    /* REDUCE WAVES pe mobil */
-    .wave {
-      /* Mai mici și mai puțin vizibile */
-      opacity: 0.08 !important;
-    }
-    .wave:nth-child(1) {
-      width: 600px;
-      height: 600px;
-      top: 15%;
-      left: 5%;
-    }
-    .wave:nth-child(2) {
-      width: 500px;
-      height: 500px;
-      top: 70%;
-      left: 65%;
-    }
-    .wave:nth-child(3) {
-      width: 400px;
-      height: 400px;
-      top: 50%;
-      left: 50%;
-    }
+  /* Waves reduse dar prezente */
+  .wave {
+    opacity: 0.06 !important; /* Foarte slab */
+  }
+  .wave:nth-child(1) { width: 500px; height: 500px; top: 10%; left: 0%; }
+  .wave:nth-child(2) { width: 400px; height: 400px; top: 60%; left: 60%; }
+  .wave:nth-child(3) { width: 300px; height: 300px; top: 45%; left: 45%; }
 
-    /* REDUCE EFECTELE LA LINK-URI */
-    .lista-ganduri li a {
-      padding: 0.9rem 1.5rem;
-      transition: background-color 150ms ease, transform 120ms ease;
-      /* TRANSFORM SIMPLIFICAT */
-      transform: none;
-    }
-    
-    .lista-ganduri li a:hover {
-      background-color: rgba(78, 143, 249, 0.06);
-      transform: translateY(-1px); /* Doar mișcare mică */
-      box-shadow: 0 4px 12px rgba(28, 113, 250, 0.08);
-    }
+  /* Restul optimizărilor rămân */
+  .lista-ganduri li a {
+    padding: 0.9rem 1.5rem;
+    transition: background-color 150ms ease, transform 120ms ease;
+    transform: none;
+  }
+  
+  .lista-ganduri li a:hover {
+    background-color: rgba(78, 143, 249, 0.06);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(28, 113, 250, 0.08);
+  }
     
     .lista-ganduri li a::before {
       width: 4px;
@@ -313,22 +318,6 @@
     .neon-title::after,
     .lista-ganduri li a {
       transition-duration: 100ms !important;
-    }
-  }
-
-  /* DISABLE COMPLET pe VERY LOW END */
-  @media (max-width: 480px) {
-    .ganduri-background-effects {
-      display: none; /* Fără waves deloc */
-    }
-    
-    .neon-title {
-      background: none;
-      -webkit-background-clip: initial;
-      background-clip: initial;
-      color: #eaf6ff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      filter: none;
     }
   }
 </style>
