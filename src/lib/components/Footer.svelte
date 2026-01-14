@@ -3,8 +3,17 @@
   import { onMount } from 'svelte';
 
   export let t = {};
+  export let currentLang = 'ro';
+
 
   $: onHomePage = $page.url.pathname === '/';
+
+   let currentYear = new Date().getFullYear();
+
+   $: formattedCopyright = t?.footerRights 
+    ? t.footerRights.replace('{year}', currentYear)
+    : `© 2025-${currentYear} SethDev`;
+  
 
   let isTouchDevice = false;
   let emailCopied = false;
@@ -67,7 +76,9 @@
 
     <div class="footer-section footer-bottom">
       <div class="footer-bottom-content">
-        <p class="footer-rights">{t?.footerRights || `© ${new Date().getFullYear()} SethDev. Toate drepturile rezervate.`}</p>
+        <p class="footer-rights">
+          {formattedCopyright}
+        </p>
       </div>
     </div>
   </div>

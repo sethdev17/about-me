@@ -5,6 +5,7 @@
     import { language } from '$lib/stores.js';
     
     export let data;
+    
 
     // Translation object - same as in +page.svelte
     const translations = {
@@ -13,7 +14,7 @@
         navProjects: 'Proiecte',
         navAnime: 'Lista Anime',
         navContact: 'Contact',
-        footerRights: '© 2025 SethDev. Toate drepturile rezervate.',
+        footerRights: '© 2025-{year} SethDev. Toate drepturile rezervate.',
         footerFollow: 'Contact',
         footerHome: 'Acasă',
         footerThoughts: 'Gândurile mele',
@@ -26,7 +27,7 @@
         navProjects: 'Projects',
         navAnime: 'Anime List',
         navContact: 'Contact',
-        footerRights: '© 2025 SethDev. All rights reserved.',
+        footerRights: '© 2025-{year} SethDev. All rights reserved.',
         footerFollow: 'Contact',
         footerHome: 'Home',
         footerThoughts: 'My Thoughts',
@@ -68,6 +69,8 @@
     <!-- La fel și aici, pasăm props explicit. -->
     <Footer 
       t={t}
+    currentLang={currentLang}
+
     />
 </div>
 
