@@ -1,14 +1,14 @@
-<!-- Calea: src/routes/ganduri/[slug]/+page.svelte -->
+<!-- src/routes/gânduri/[slug]/+page.svelte -->
 <script>
     export let data;
 </script>
 
-<div class="post-background" style="--bg-image: url('{data.post.backgroundImage}')">
+<div class="post-background" style="--bg-image: url('{data.meta.backgroundImage}')">
     <article class="post-content">
-        <h1>{data.post.title}</h1>
+        <h1>{data.meta.title}</h1>
         <div class="divider"></div>
         <div class="post-text">
-            {@html data.post.content}
+            <svelte:component this={data.content} />
         </div>
     </article>
 </div>
@@ -76,23 +76,21 @@
         hyphens: auto;
         margin-top: 0; 
         margin-bottom: 1.2em; 
-
-        /* ======== MODIFICAREA CHEIE PENTRU PC ======== */
-        /* Valori negative foarte mici pentru a strânge textul. */
-        /* Acest lucru ajută algoritmul de 'justify' să găsească soluții mai bune. */
         letter-spacing: -0.1px; 
         word-spacing: -0.2px;
-        /* ============================================== */
+    }
+
+    :global(.post-text h1) {
+        font-size: 1.8rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: #fff;
     }
 
     :global(.post-text p:last-child) {
         margin-bottom: 0;
     }
-    :global(.post-text p.fara-alineat) {
-        text-indent: 0;
-    }
     
-    /* Responsive Design */
     @media (max-width: 767px) {
         .post-background {
             background-attachment: scroll;
@@ -117,8 +115,6 @@
             -webkit-hyphens: none;
             hyphens: none;
             text-indent: 1.5em;
-            
-            /* Resetăm valorile la normal pe mobil, unde nu sunt necesare */
             letter-spacing: normal; 
             word-spacing: normal;
         }
