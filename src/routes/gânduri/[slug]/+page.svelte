@@ -56,7 +56,7 @@
 
     .divider {
         height: 1px;
-        width: 100px;
+        width: 200px;
         margin: 0 auto 2.5rem auto;
         background: linear-gradient(90deg, transparent, #3b82f6, transparent);
     }
@@ -71,11 +71,11 @@
         font-size: 1.05rem;
         line-height: 1.8;
         text-align: justify;
-        text-indent: 2em;
+        text-indent: 1em;
         -webkit-hyphens: auto;
         hyphens: auto;
         margin-top: 0; 
-        margin-bottom: 1.2em; 
+        margin-bottom: 1em; 
         letter-spacing: -0.1px; 
         word-spacing: -0.2px;
     }
@@ -89,6 +89,10 @@
 
     :global(.post-text p:last-child) {
         margin-bottom: 0;
+    }
+
+    :global(.post-text p.fara-alineat) {
+        text-indent: 0 !important;
     }
     
     @media (max-width: 767px) {
