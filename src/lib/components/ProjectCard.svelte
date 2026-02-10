@@ -4,11 +4,11 @@
 
   // Harta de culori rămâne aceeași
   const languageColors = {
-    JavaScript: '#f1e05a', HTML: '#e34c26', CSS: '#563d7c',
+    JavaScript: '#f1e05a', HTML: '#e34c26', CSS: '#1572B6',
     TypeScript: '#3178c6', Python: '#3572A5', Java: '#b07219',
-    Shell: '#89e051', Svelte: '#ff3e00', Vue: '#4FC08D',
+    Shell: '#89e051', Svelte: '#ff3e00', Vue: '#41b883',
     C: '#555555', 'C++': '#f34b7d', 'C#': '#178600',
-    PHP: '#4F5D95', Go: '#00ADD8'
+    PHP: '#4F5D95', Go: '#00ADD8', EJS: '#a91e50'
   };
 
   // =============== LOGICĂ NOUĂ PENTRU PROCENTAJE ===============
