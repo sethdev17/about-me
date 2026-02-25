@@ -1,6 +1,6 @@
 <script>
-  import { slide } from 'svelte/transition';
-  
+  import { slide } from "svelte/transition";
+
   export let t;
   export let data;
   export let isTouchDevice;
@@ -21,7 +21,11 @@
         <a href={anime.url} target="_blank" rel="noopener noreferrer">
           {anime.title}
           {#if anime.imageUrl && !isTouchDevice}
-            <img src={anime.imageUrl} alt="Coperta {anime.title}" class="anime-thumbnail" />
+            <img
+              src={anime.imageUrl}
+              alt="Coperta {anime.title}"
+              class="anime-thumbnail"
+            />
           {/if}
         </a>
       </li>
@@ -33,13 +37,20 @@
             <a href={anime.url} target="_blank" rel="noopener noreferrer">
               {anime.title}
               {#if anime.imageUrl && !isTouchDevice}
-                <img src={anime.imageUrl} alt="Coperta {anime.title}" class="anime-thumbnail" />
+                <img
+                  src={anime.imageUrl}
+                  alt="Coperta {anime.title}"
+                  class="anime-thumbnail"
+                />
               {/if}
             </a>
           </li>
         {/each}
       {/if}
-      <button class="toggle-list-button" on:click={() => showAllAnime = !showAllAnime}>
+      <button
+        class="toggle-list-button"
+        on:click={() => (showAllAnime = !showAllAnime)}
+      >
         {showAllAnime ? t.showLess : t.showMore}
       </button>
     {/if}
@@ -67,11 +78,11 @@
   }
 
   :global(.mal-icon) {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     vertical-align: middle;
     margin: 0 4px;
-    transition: transform 0.2s ease-out;
+    transition: transform 0.3s ease-out;
     filter: brightness(0) invert(1);
   }
 
@@ -102,32 +113,41 @@
   .top-anime-list a {
     color: #c7c7c7;
     text-decoration: none;
-    transition: color 0.2s ease-out;
     font-size: 0.95rem;
-    display: block;
+    display: inline-block;
+    transition: color 0.2s ease-out;
   }
 
-  .top-anime-list a:hover {
-    color: #fff;
+  .top-anime-list li:hover a {
+    color: #ffffff;
+    transform: scale(1.05);
+    font-weight: 500;
+    transition:
+      color 0.2s ease-out,
+      transform 0.3s ease-out;
+    transform-origin: left;
   }
 
   .anime-thumbnail {
     position: absolute;
-    right: 105%;
+    right: 104%;
     top: 50%;
-    transform: translateY(-50%) scale(0.8);
-    margin-right: 2.4rem;
-    width: 120px;
-    height: 170px;
+    transform: translateY(-50%) scale(0.6);
+    margin-right: 4rem;
+    width: 170px;
+    height: 250px;
     object-fit: cover;
     border-radius: 6px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s;
+    transition:
+      opacity 0.2s ease-out,
+      transform 0.4s ease-out,
+      visibility 2s;
     pointer-events: none;
-    z-index: 10;
+    z-index: 20;
   }
 
   .top-anime-list li:hover .anime-thumbnail {

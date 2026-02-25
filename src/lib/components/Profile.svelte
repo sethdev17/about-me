@@ -1,6 +1,6 @@
 <script>
-  import { onMount } from 'svelte';
-  
+  import { onMount } from "svelte";
+
   export let t;
   export let isTouchDevice;
   export let myEmail;
@@ -40,10 +40,18 @@
         class:slide-left={animationState !== 0}
       />
       <div class="animated-content-wrapper">
-        <div class="animated-text" class:visible={animationState === 1} data-text="SethDev">
+        <div
+          class="animated-text"
+          class:visible={animationState === 1}
+          data-text="SethDev"
+        >
           SethDev
         </div>
-        <div class="animated-text" class:visible={animationState === 2} data-text={t.ageText}>
+        <div
+          class="animated-text"
+          class:visible={animationState === 2}
+          data-text={t.ageText}
+        >
           {t.ageText}
         </div>
         <div class="fire-trail" class:active={animationState !== 0}></div>
@@ -55,10 +63,20 @@
   </div>
 
   <div class="social-links">
-    <a href="https://github.com/sethdev17" target="_blank" rel="noopener noreferrer" aria-label="Profilul meu de GitHub">
+    <a
+      href="https://github.com/sethdev17"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Profilul meu de GitHub"
+    >
       <img src="/images/github.svg" alt="GitHub Icon" />
     </a>
-    <a href="https://discord.com/users/602431963688730624" target="_blank" rel="noopener noreferrer" aria-label="Contacteaza-ma pe Discord">
+    <a
+      href="https://discord.com/users/602431963688730624"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contacteaza-ma pe Discord"
+    >
       <img src="/images/discord.svg" alt="Discord Icon" />
     </a>
 
@@ -76,7 +94,12 @@
       </button>
     {/if}
 
-    <a href="https://www.instagram.com/19.decembrie_" target="_blank" rel="noopener noreferrer" aria-label="Profilul meu de Instagram">
+    <a
+      href="https://www.instagram.com/19.decembrie_"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Profilul meu de Instagram"
+    >
       <img src="/images/instagram.svg" alt="Instagram Icon" />
     </a>
   </div>
@@ -144,7 +167,9 @@
     color: transparent;
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.4s ease-out;
   }
 
   .animated-text.visible {
@@ -174,8 +199,13 @@
   }
 
   @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 
   .fire-trail {
@@ -184,13 +214,24 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #dbeafe, #60a5fa, #dbeafe, transparent);
-    box-shadow: 0 0 8px 1px #a7c8ff, 0 0 15px 2px #3b82f6;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #dbeafe,
+      #60a5fa,
+      #dbeafe,
+      transparent
+    );
+    box-shadow:
+      0 0 8px 1px #a7c8ff,
+      0 0 15px 2px #3b82f6;
     border-radius: 2px;
     transform: scaleX(0);
     opacity: 0;
     transform-origin: right;
-    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    transition:
+      transform 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1);
   }
 
   .fire-trail.active {
@@ -198,8 +239,16 @@
   }
 
   @keyframes draw-in {
-    from { transform-origin: left; transform: scaleX(0); opacity: 0; }
-    to { transform-origin: left; transform: scaleX(1); opacity: 1; }
+    from {
+      transform-origin: left;
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    to {
+      transform-origin: left;
+      transform: scaleX(1);
+      opacity: 1;
+    }
   }
 
   .text-block {
@@ -245,12 +294,17 @@
 
   .social-links a::before,
   .social-links button::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(150, 200, 255, 0.3) 0, rgba(29, 78, 216, 0.2) 50%, transparent 70%);
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(150, 200, 255, 0.3) 0,
+      rgba(29, 78, 216, 0.2) 50%,
+      transparent 70%
+    );
     box-shadow:
       0 0 15px rgba(29, 78, 216, 0.5),
       inset 0 0 10px rgba(255, 255, 255, 0.2);
@@ -260,7 +314,7 @@
 
   .social-links a::after,
   .social-links button::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 60px;
     height: 60px;
@@ -276,7 +330,9 @@
     width: 28px;
     height: 28px;
     filter: brightness(0) invert(1);
-    transition: filter 0.3s ease-out, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      filter 0.3s ease-out,
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .social-links button span {
@@ -287,13 +343,52 @@
   }
 
   @keyframes water-bubble {
-    0%, 100% { transform: scale(1) translateY(0); opacity: 0.8; }
-    50% { transform: scale(1.05) translateY(-2px); opacity: 1; }
+    0%,
+    100% {
+      transform: scale(1) translateY(0);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.05) translateY(-2px);
+      opacity: 1;
+    }
   }
 
   @keyframes ripple {
-    0%, 100% { transform: scale(1); opacity: 0.3; }
-    100% { transform: scale(1.5); opacity: 0; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.3;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  :global(.saber) {
+    color: #fff88b;
+    font-weight: 700;
+    transition: color 0.3s ease-out;
+    text-decoration-thickness: 1.5px;
+  }
+
+  :global(.saber:hover) {
+    color: #faf4a6;
+    text-decoration: underline;
+    cursor: auto;
+  }
+
+  :global(.discord-link) {
+    color: #545fd7;
+    transition: color 0.3s ease-out;
+    font-weight: 700;
+    text-decoration-thickness: 1.5px;
+  }
+
+  :global(.discord-link:hover) {
+    color: #6181f3;
+    text-decoration: underline;
   }
 
   @media (max-width: 767px) {
