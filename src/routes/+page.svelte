@@ -42,11 +42,12 @@
     isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
     function handleScroll() {
-      showScrollTop = window.scrollY > 300;
+      showScrollTop = window.scrollY > 400;
       const scrollPosition = window.scrollY;
       const windowHeight = window.innerHeight;
       const pageHeight = document.body.offsetHeight;
-      if (windowHeight + scrollPosition >= pageHeight - 50) {
+      
+      if (windowHeight + scrollPosition >= pageHeight - 100) {
         if (currentSection !== 'contact') currentSection = 'contact';
       } else if (scrollPosition < 250) {
         if (currentSection !== 'about') currentSection = 'about';
@@ -65,11 +66,7 @@
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-
-    setTimeout(() => {
-      handleScroll();
-      setupIntersectionObserver();
-    }, 100);
+    setupIntersectionObserver();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -82,24 +79,6 @@
   <title>{t.title}</title>
   <meta name="description" content={t.metaDescription}>
   <link rel="canonical" href={siteUrl}>
-  <meta property="og:title" content={t.title}>
-  <meta property="og:description" content={t.metaDescription}>
-  <meta property="og:type" content="website">
-  <meta property="og:url" content={siteUrl}>
-  <meta property="og:image" content={socialImage}>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Portofoliu SethDev">
-  <meta name="theme-color" content="#1d4ed8">
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2CZ9SFQ8JK"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-2CZ9SFQ8JK');
-  </script>
 </svelte:head>
 
 <div class="container">
@@ -130,17 +109,34 @@
   on:click={scrollToTop}
   aria-label="Scroll to top"
 >
-  <span class="arrow"></span>
+  <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
 
 <style>
+  :global(html) {
+    background-color: #000 !important;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
   :global(body) {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #f0f0f0;
     background-color: #000;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Forțează numărul să stea sus la anime */
+  :global(.anime-item) {
+    display: flex !important;
+    align-items: flex-start !important; 
+    padding: 10px 0;
   }
 
   .container {
@@ -151,6 +147,7 @@
     padding: 8rem 1rem 4rem;
     position: relative;
     z-index: 1;
+    width: 100%;
     box-sizing: border-box;
   }
 
@@ -161,9 +158,10 @@
     left: 50%;
     width: 900px;
     height: 900px;
-    background-image: radial-gradient(circle, rgba(29, 78, 216, 0.25) 0, rgba(0, 0, 0, 0) 55%);
+    background-image: radial-gradient(circle, rgba(29, 78, 216, 0.2) 0, rgba(0, 0, 0, 0) 60%);
     transform: translate(-50%, -50%);
     z-index: -2;
+    pointer-events: none;
   }
 
   .background-effects {
@@ -172,6 +170,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: -1;
+    pointer-events: none;
   }
 
   .background-effects::before {
@@ -181,10 +180,7 @@
     height: 6px;
     background: #e0eaff;
     border-radius: 50%;
-    box-shadow:
-      0 0 15px 4px #a7c8ff,
-      0 0 25px 10px #60a5fa,
-      0 0 50px 20px rgba(29, 78, 216, 0.5);
+    box-shadow: 0 0 15px 4px #a7c8ff, 0 0 25px 10px #60a5fa, 0 0 50px 20px rgba(29, 78, 216, 0.4);
     animation: core-pulse 4s infinite ease-in-out;
   }
 
@@ -202,17 +198,8 @@
     width: 100%;
   }
 
-  .projects-section {
-    width: 100%;
-    max-width: 600px;
-  }
-
-  .projects-section h2 {
-    text-align: left;
-    margin-bottom: 2rem;
-    font-size: 1.2rem;
-    color: #f0f0f0;
-  }
+  .projects-section { width: 100%; }
+  .projects-section h2 { margin-bottom: 2rem; font-size: 1.2rem; color: #f0f0f0; }
 
   .projects-grid {
     display: grid;
@@ -223,35 +210,25 @@
   .scroll-to-top {
     position: fixed;
     bottom: 2rem;
-    right: 2rem;
-    width: 45px;
-    height: 45px;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    border: none;
-    border-radius: 50%;
+    right: 2.5rem;
+    width: 48px;
+    height: 48px;
+    background: rgba(20, 20, 25, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #60a5fa;
+    border-radius: 14px;
     cursor: pointer;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    transform: translateY(15px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 99;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .scroll-to-top .arrow {
-    display: inline-block;
-    position: relative;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    border-top: 3px solid #fff;
-    border-left: 3px solid #fff;
-    transform: rotate(45deg);
-    transition: all 250ms ease-in-out;
-    top: 5px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   }
 
   .scroll-to-top.visible {
@@ -261,41 +238,35 @@
   }
 
   .scroll-to-top:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(96, 165, 250, 0.4);
+    color: #fff;
+    transform: translateY(-5px);
   }
 
-  .scroll-to-top:hover .arrow {
-    border-color: #f0f0f0;
-    border-width: 4px;
-  }
-
+  /* --- OPTIMIZĂRI TEXT MOBIL --- */
   @media (max-width: 767px) {
+    .container { padding: 4rem 1.25rem 2rem; }
+    .profile-card-container { gap: 2rem; }
+    .projects-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    
     .scroll-to-top {
-      bottom: 1rem;
-      right: 1rem;
-      width: 40px;
-      height: 40px;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 42px;
+      height: 42px;
     }
 
-    .container {
-      padding: 5rem 1.5rem 2.5rem;
+    .container::before { width: 400px; height: 400px; }
+
+    /* MĂRIRE TEXT GLOBALĂ PE MOBIL */
+    :global(body) {
+      font-size: 17px; /* Crește baza de la 16px */
     }
 
     .projects-section h2 {
-      font-size: 1.05rem;
-      margin-bottom: 1.2rem;
+      font-size: 1.3rem; /* Titlu secțiune mai mare */
       text-align: center;
-    }
-
-    .projects-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    .container::before {
-      width: 350px;
-      height: 350px;
     }
   }
 </style>

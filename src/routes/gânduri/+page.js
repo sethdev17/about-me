@@ -6,7 +6,9 @@ export async function load() {
     const slug = path.split('/').pop().replace('.md', '');
     return {
       slug,
-      title: post.metadata.title
+      title: post.metadata.title,
+      date: post.metadata.date,
+      themeColor: post.metadata.themeColor || '#60a5fa' 
     };
   });
 

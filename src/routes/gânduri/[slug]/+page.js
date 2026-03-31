@@ -6,7 +6,8 @@ export async function load({ params }) {
     const post = await import(`../../../lib/posts/${params.slug}.md`);
     return {
       content: post.default,
-      meta: post.metadata
+      meta: post.metadata,
+      themeColor: post.metadata.themeColor || '#60a5fa' 
     };
   } catch (e) {
     throw error(404, 'Gândul nu a fost găsit');

@@ -140,7 +140,7 @@
     object-fit: cover;
     position: relative;
     z-index: 10;
-    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
   }
 
   .profile-picture.slide-left {
@@ -213,7 +213,7 @@
     bottom: 25%;
     left: 0;
     width: 100%;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(
       90deg,
       transparent,
@@ -398,16 +398,17 @@
     }
 
     .main-content {
-      gap: 1rem;
+      margin-top: 2rem;
+      gap: 2rem;
     }
 
     .pfp-container {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
     }
 
     .profile-picture.slide-left {
-      transform: translateX(-110px);
+      transform: translateX(-111px);
     }
 
     .animated-content-wrapper {
@@ -415,7 +416,7 @@
     }
 
     .animated-text {
-      font-size: 1.3rem;
+      font-size: 1.7rem;
     }
 
     .text-block {

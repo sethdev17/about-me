@@ -189,7 +189,7 @@
 
     .top-anime-list li,
     .top-anime-list a {
-      font-size: 0.875rem;
+      font-size: 15px;
     }
 
     .top-anime-list li {
@@ -208,7 +208,7 @@
     }
 
     .toggle-list-button {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       margin-top: 0.8rem;
       margin-left: -20px;
     }
