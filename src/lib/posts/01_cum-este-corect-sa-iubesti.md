@@ -7,7 +7,7 @@ date: "25 Martie 2026"
 
 Iubirea este unul dintre cele mai complexe și paradoxale sentimente umane. Într-o lume care ne învață să fim independenți și să ne urmăm propriile căi, iubirea adevărată pare să ceară un alt tip de sacrificiu: acela de a ne deschide complet către altcineva, de a ne pierde uneori pe noi înșine pentru a găsi o conexiune profundă. Dar cum putem iubi corect? Poate că răspunsul nu este să găsim o formulă universală, ci să învățăm să iubim autentic, cu vulnerabilitate și curaj, acceptând imperfecțiunile celuilalt și ale noastre. 
 
-<p class="fara-alineat">Iubirea nu este o destinație finală, nici o medalie obținută după un drum greu. Se dezvăluie ca o călătorie fără sfârșit, o busolă care ne însoțește prin fiecare etapă a vieții. În căutarea iubirii, oamenii privesc adesea spre exterior, uitând că drumul începe înăuntru. Adevărata întâlnire nu este cu „celălalt”, ci cu tine însuți. În momentul în care îți descoperi propria lume lăuntrică și o îmbrățișezi cu lumină și răbdare, abia atunci ești pregătit să o împarți cu altcineva.</p>
+<p class="fara-alineat">Iubirea nu este o destinație finală, nici o medalie obținută după un drum greu. Se dezvăluie ca o călătorie fără sfârșit, o busolă care ne însoțește prin fiecare etapă a vieții. În căutarea iubirii, oamenii privesc adesea spre exterior, uitând că drumul începe înăuntru. Adevărata întâlnire nu este cu „celălalt”, ci cu tine însuți. În momentul în care îți descoperi propria lume <span class="term-tooltip">lăuntrică<span class="info-icon">i</span><span class="tooltip-bubble">Care se află în interior.</span></span> și o îmbrățișezi cu lumină și răbdare, abia atunci ești pregătit să o împarți cu altcineva.</p>
 
 <p class="fara-alineat">Iubirea, în forma ei autentică, nu este o posesie. Nu este o victorie și nici o „asigurare” împotriva singurătății. Este o artă delicată, care cere să fie cultivată asemenea unei grădini: cu grijă, cu răbdare și cu un angajament constant de a hrăni ceea ce contează.</p>
 
@@ -25,11 +25,11 @@ Când porțile grădinii se deschid, începe dansul apropierii. Intimitatea nu e
 
 <p class="fara-alineat">Această apropiere nu se clădește din întâmplare. Ea se naște din alegeri mici și repetate: respect, atenție, grijă zilnică. Intimitatea este, de fapt, un ritual sacru care se hrănește din gesturile simple, un zâmbet, o mână ținută strâns, o tăcere împărtășită.</p>
 
-**Actul III – Metamorfoza durerii**
+**Actul III – <span class="term-tooltip">Metamorfoza<span class="info-icon">i</span><span class="tooltip-bubble">A căpăta sau a face să capete altă figură, altă înfățișare.</span></span> durerii**
 
 Dar chiar și cele mai frumoase grădini pot fi atinse de furtună. Uneori, poveștile se încheie. Și atunci, inima simte că se sfărâmă. E important să știm că nu vom reîncepe „ușor” să iubim, ci vom reîncepe „altfel”. Durerea este dovada că iubirea a fost reală. Inima seamănă cu un copac lovit de trăsnet, cicatricea rămâne, dar ea nu o oprește din creștere. Ramurile se întind din nou spre soare, purtând semnul rănii ca parte a propriei istorii.
 
-<p class="fara-alineat">Nu trebuie să îți rupi iubirea din tine pentru a merge mai departe. Trebuie doar să o transformi. Din „iubire de parteneriat” ea devine „iubire de rămas-bun”, o formă de recunoștință pentru ceea ce a fost. Atunci când îl întâlnești din nou pe cel care a plecat, oferă un salut demn. Nu ignoranță rece, nu ostilitate, ci o recunoaștere simplă, „Ai făcut parte din povestea mea, și îți mulțumesc pentru asta.” Durerea, transformată, nu mai este o povară, ci un strat nou de pământ fertil în grădina sufletului.</p>
+<p class="fara-alineat">Nu trebuie să îți rupi iubirea din tine pentru a merge mai departe. Trebuie doar să o transformi. Din „iubire de parteneriat” ea devine „iubire de rămas-bun”, o formă de recunoștință pentru ceea ce a fost. Atunci când îl întâlnești din nou pe cel care a plecat, oferă un salut demn. Nu ignoranță rece, nu <span class="term-tooltip">ostilitate<span class="info-icon">i</span><span class="tooltip-bubble">Atitudine dușmănoasă, plină de ură.</span></span>, ci o recunoaștere simplă, „Ai făcut parte din povestea mea, și îți mulțumesc pentru asta.” Durerea, transformată, nu mai este o povară, ci un strat nou de pământ fertil în grădina sufletului.</p>
 
 **Actul IV – Înțelepciunea călătoriei**
 

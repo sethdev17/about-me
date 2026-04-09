@@ -74,6 +74,7 @@
         text-align: justify;
         text-indent: 1em;
         margin-bottom: 1em;
+        letter-spacing: -0.04em;
     }
 
     :global(.post-text h1) {
@@ -81,6 +82,7 @@
         margin-top: 2rem;
         margin-bottom: 1rem;
         color: #fff;
+        letter-spacing: 0.01em;
     }
 
     :global(.post-text p.fara-alineat) {
@@ -124,6 +126,89 @@
         text-shadow: 0 0 10px var(--accent-color);
     }
 
+     :global(.term-tooltip) {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        color: var(--accent-color); /* Cuvântul va avea culoarea temei */
+        opacity: 0.8;
+        text-decoration: underline 1.3px dashed var(--accent-color);
+        cursor: help;
+        text-indent: 0 !important; /* Previne indentarea dacă e la început de rând */
+        transition: opacity 0.3s ease;
+    }
+
+    :global(.info-icon) {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 14px;
+        height: 14px;
+        margin-left: 4px;
+        margin-right: 4px;
+        background-color: var(--accent-color);
+        color: #fff;
+        opacity: 0.6;
+        border-radius: 50%;
+        font-size: 10px;
+        font-family: serif;
+        font-weight: bold;
+        font-style: normal;
+        vertical-align: middle;
+        box-shadow: 0 0 5px var(--accent-color);
+        transition: opacity 0.3s ease;
+    }
+
+    :global(.tooltip-bubble) {
+        visibility: hidden;
+        width: 220px;
+        background: rgba(20, 20, 25, 0.95);
+        color: #fff;
+        text-align: center;
+        border: 1.6px solid var(--accent-color);
+        border-radius: 8px;
+        padding: 10px;
+        position: absolute;
+        z-index: 100;
+        bottom: 150%; /* Apare deasupra */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        font-family: 'Roboto', sans-serif;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        font-style: normal;
+        text-shadow: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        pointer-events: none;
+    }
+
+    /* Săgeata bulei */
+    :global(.tooltip-bubble::after) {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: var(--accent-color) transparent transparent transparent;
+    }
+
+    /* Aceasta este o singură regulă care țintește ambele elemente când grupul primește hover */
+    :global(.term-tooltip:hover), 
+    :global(.term-tooltip:hover .info-icon) {
+       opacity: 1 !important;
+    }
+
+    /* Hover effect */
+    :global(.term-tooltip:hover .tooltip-bubble) {
+        visibility: visible;
+        opacity: 1;
+        bottom: 130%;
+    }
+
     /* --- RESPONSIVITATE --- */
     @media (max-width: 767px) {
         .post-background {
@@ -153,6 +238,11 @@
             margin-top: 3rem;
             font-size: 0.85rem;
             transform: none !important; /* Evităm mișcarea laterală pe touch */
+        }
+
+        :global(.tooltip-bubble) {
+            width: 160px;
+            font-size: 0.8rem;
         }
     }
 </style>
