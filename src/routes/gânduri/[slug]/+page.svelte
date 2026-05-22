@@ -3,9 +3,10 @@
     export let data;
 </script>
 
-<div class="post-background" 
-     style="--bg-image: url('{data.meta.backgroundImage}'); 
-            --accent-color: {data.meta.themeColor || '#3b82f6'};">
+<div class="post-container" style="--accent-color: {data.meta.themeColor || '#3b82f6'};">
+    <div class="post-banner" style="--bg-image: url('{data.meta.backgroundImage}');"></div>
+
+    <!-- Articolul sub imagine -->
     <article class="post-content">
         <h1>{data.meta.title}</h1>
         <div class="divider"></div>
@@ -16,30 +17,41 @@
 </div>
 
 <style>
-    .post-background {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), var(--bg-image);
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        min-height: 100dvh;
+    .post-container {
+        width: 100%;
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 40px 1.5rem;
         box-sizing: border-box;
-        padding: 100px 1.5rem 4rem;
     }
 
-    .post-content {
-        max-width: 800px;
+    /* BANNERUL */
+    .post-banner {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), var(--bg-image);
+        background-size: cover;
+        background-position: center;
+        
+        /* Dimensiuni */
         width: 100%;
-        background: rgba(10, 10, 15, 0.65);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        height: 350px;
+        border: 2px solid rgb(0, 0, 0);
         border-radius: 16px;
-        padding: 3rem 4rem;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        
+        margin-bottom: 2.5rem; /* Spațiul dintre banner și titlu */
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* TEXTUL */
+    .post-content {
+        width: 100%;
+        background: color-mix(in srgb, var(--accent-color) 4%, #010108);
+        border: 1px solid color-mix(in srgb, var(--accent-color) 15%, transparent);
+        border-radius: 16px;
+        padding: 3.5rem 4rem;
+        box-sizing: border-box;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 
+                0 0 50px color-mix(in srgb, var(--accent-color) 3%, transparent);
     }
 
     h1 {
@@ -89,7 +101,7 @@
         text-indent: 0 !important;
     }
 
-    /* --- DATA CREĂRII OPTIMIZATĂ --- */
+    /* --- DATA CREĂRII --- */
     :global(.post-text .data-creare) {
         display: block;
         text-align: right;
@@ -100,8 +112,8 @@
         font-style: italic;
         font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.4);
-        text-indent: 0 !important; /* Fix pentru centrarea pe mobil */
-        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* Animație mai fluidă */
+        text-indent: 0 !important;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         cursor: default;
     }
 
@@ -110,7 +122,7 @@
         margin-right: 8px;
         font-style: normal;
         opacity: 0.6;
-        color: var(--accent-color); /* Am legat culoarea simbolului de temă */
+        color: var(--accent-color);
         transition: all 0.4s ease;
     }
 
@@ -118,7 +130,7 @@
         color: var(--accent-color);
         opacity: 1;
         text-shadow: 0 0 15px var(--accent-color);
-        transform: translateX(-5px); /* Mică mișcare fluidă la hover */
+        transform: translateX(-5px);
     }
 
     :global(.post-text .data-creare:hover::before) {
@@ -130,11 +142,11 @@
         position: relative;
         display: inline-flex;
         align-items: center;
-        color: var(--accent-color); /* Cuvântul va avea culoarea temei */
+        color: var(--accent-color);
         opacity: 0.8;
         text-decoration: underline 1.3px dashed var(--accent-color);
         cursor: help;
-        text-indent: 0 !important; /* Previne indentarea dacă e la început de rând */
+        text-indent: 0 !important;
         transition: opacity 0.3s ease;
     }
 
@@ -196,7 +208,7 @@
         border-color: var(--accent-color) transparent transparent transparent;
     }
 
-    /* Aceasta este o singură regulă care țintește ambele elemente când grupul primește hover */
+    
     :global(.term-tooltip:hover), 
     :global(.term-tooltip:hover .info-icon) {
        opacity: 1 !important;
@@ -211,33 +223,37 @@
 
     /* --- RESPONSIVITATE --- */
     @media (max-width: 767px) {
-        .post-background {
-            background-attachment: scroll !important; /* Scroll mult mai fluid pe mobil */
-            padding-top: 80px;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            align-items: flex-start;
+        .post-container {
+            padding: 15px 0.5rem; /* Spațiu mai mic pe marginile ecranului telefonului */
+        }
+
+        .post-banner {
+            height: 200px;
+            border-radius: 12px;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
         }
         
         .post-content {
-            padding: 2.5rem 1.5rem;
+            padding: 2rem 1.2rem;
+            border-radius: 12px;
         }
         
         h1 {
-            font-size: 1.9rem;
+            font-size: 1.8rem;
         }
         
         :global(.post-text p) {
             font-size: 1rem;
             text-align: left;
-            text-indent: 1.5em;
+            text-indent: 1.2em;
         }
 
         :global(.post-text .data-creare) {
-            text-align: center !important; /* Centrare reală pe mobil */
+            text-align: center !important; 
             margin-top: 3rem;
             font-size: 0.85rem;
-            transform: none !important; /* Evităm mișcarea laterală pe touch */
+            transform: none !important; 
         }
 
         :global(.tooltip-bubble) {

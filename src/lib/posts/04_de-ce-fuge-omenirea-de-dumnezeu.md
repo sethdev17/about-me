@@ -1,6 +1,6 @@
 ---
 title: "De ce fuge omenirea de Dumnezeu?"
-baackgroundImage: "/backgrounds/"
+backgroundImage: "/backgrounds/dumnezeu.jpg"
 themeColor: "red"
 date: "9 Aprilie 2026"
 ---
