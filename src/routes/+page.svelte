@@ -132,6 +132,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  :global(::selection) {
+    background-color: rgba(100, 159, 207, 0.285);
+    color: white;
+  }
+
   /* Forțează numărul să stea sus la anime */
   :global(.anime-item) {
     display: flex !important;

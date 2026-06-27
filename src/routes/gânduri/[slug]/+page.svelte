@@ -25,6 +25,11 @@
         box-sizing: border-box;
     }
 
+    .post-container :global(::selection) {
+        background-color: var(--accent-color);
+        color: #ffffff;
+    }
+
     /* BANNERUL */
     .post-banner {
         background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), var(--bg-image);
