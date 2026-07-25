@@ -8,6 +8,7 @@ export default defineConfig({
       usePolling: true,
     },
     middlewareMode: false,
+    allowedHosts: ['.loca.lt'] 
   },
   assetsInclude: ['**/*.svg'],
 });

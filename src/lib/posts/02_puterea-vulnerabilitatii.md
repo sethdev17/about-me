@@ -2,6 +2,7 @@
 title: "Puterea vulnerabilității"
 backgroundImage: "/backgrounds/vulnerabilitate.jpg"
 themeColor: "#ce9e2d"
+description: "Vulnerabilitatea este o binecuvântare dar și un blestem.
 date: "25 Martie 2026"
 ---
 
