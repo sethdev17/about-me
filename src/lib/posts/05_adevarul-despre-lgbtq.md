@@ -38,10 +38,19 @@ Aceasta este părerea mea, bazată pe studiul pe care l-am făcut pe acest subie
 
 
 
-<video width="100%" controls style="border-radius: 12px; margin: 20px 0;">
-  <source src="/video/clip-lgbtq.mp4" type="video/mp4">
-  Ne pare rău, dar browser-ul tău nu suportă redarea acestui video.
-</video>
+<div class="video-container" style="position: relative; width: 100%; aspect-ratio: 16/9; margin: 2.5rem 0; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.08);">
+  <iframe 
+    width="100%" 
+    height="100%" 
+    src="https://www.youtube.com/embed/EZodFJWHyB4" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+    referrerpolicy="strict-origin-when-cross-origin" 
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;">
+  </iframe>
+</div>
 
 <p class="fara-alineat">Surse:</p>
 
