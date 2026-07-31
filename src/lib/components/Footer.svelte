@@ -1,32 +1,36 @@
 <script>
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
+  import { CONTACT_EMAIL, copyToClipboard } from '$lib/utils.js';
 
   export let t = {};
   export let currentLang = 'ro';
 
   let currentYear = new Date().getFullYear();
-  $: formattedCopyright = t?.footerRights 
-    ? t.footerRights.replace('{year}', currentYear)
+  $: formattedCopyright = t?.footerRights
+    ? t.footerRights.replace('{year}', String(currentYear))
     : `© 2025-${currentYear} SethDev. Toate drepturile rezervate.`;
 
   let isTouchDevice = false;
   let emailCopied = false;
-  const myEmail = 'gg079331@gmail.com';
+  const myEmail = CONTACT_EMAIL;
 
-  function copyEmail() {
-    navigator.clipboard.writeText(myEmail).then(() => {
+  async function copyEmail() {
+    const ok = await copyToClipboard(myEmail);
+    if (ok) {
       emailCopied = true;
       setTimeout(() => { emailCopied = false; }, 2500);
-    });
+    }
   }
 
   onMount(() => {
     isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   });
+
+  $: void currentLang;
 </script>
 
-<footer class="main-footer" id="contact">
+<footer class="main-footer" id="contact" data-lang={currentLang}>
   <div class="footer-content">
     
     <!-- COLOANA 1: LOGO -->
@@ -135,6 +139,7 @@
     background: linear-gradient(90deg, #ffffff 0%, #60a5fa 50%, #ffffff 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
+            background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shine 4s linear infinite;
     text-decoration: none; /* Siguranță extra */

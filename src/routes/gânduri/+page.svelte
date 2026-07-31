@@ -1,7 +1,8 @@
 <script>
   import { fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-  
+  import { getColorsArr, isValidHexColor } from '$lib/utils.js';
+
   export let data;
 
   // --- STATE ---
@@ -17,7 +18,7 @@
 
   // --- HELPERS ---
   const luni = { 'Ianuarie': 0, 'Februarie': 1, 'Martie': 2, 'Aprilie': 3, 'Mai': 4, 'Iunie': 5, 'Iulie': 6, 'August': 7, 'Septembrie': 8, 'Octombrie': 9, 'Noiembrie': 10, 'Decembrie': 11 };
-  
+
   function parseDate(d) {
     if (!d) return 0;
     const p = d.split(' ');
@@ -25,41 +26,26 @@
   }
 
   function hexToRgb(hex) {
-    if (!hex) return '96, 165, 250';
+    if (!hex || !isValidHexColor(hex)) return '96, 165, 250';
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '96, 165, 250';
   }
 
-  // --- NOU: Logica pentru un loop infinit, perfect fluid ---
-  function getColorsArr(colors) {
-    if (!colors) return null;
-    if (Array.isArray(colors)) return colors;
-    if (typeof colors === 'string') {
-      if (colors.includes('[')) {
-        try { return JSON.parse(colors); } catch(e) { return null; }
-      }
-      return colors.split(',').map(c => c.trim());
-    }
-    return null;
-  }
-
   function getMainColor(colors, fallback) {
     const arr = getColorsArr(colors);
-    return (arr && arr[0]) || fallback || '#60a5fa'; 
+    return (arr && arr[0]) || (isValidHexColor(fallback) ? fallback : '#60a5fa');
   }
 
-  // Truc matematic pentru loop: adăugăm primele 2 culori la final
   function getGradient(colors, fallback) {
     const arr = getColorsArr(colors);
     if (arr && arr.length > 1) {
       const extended = [...arr, arr[0], arr[1]];
       return `linear-gradient(90deg, ${extended.join(', ')})`;
     }
-    const singleColor = (arr && arr[0]) || fallback || '#60a5fa';
+    const singleColor = (arr && arr[0]) || (isValidHexColor(fallback) ? fallback : '#60a5fa');
     return `linear-gradient(90deg, ${singleColor}, ${singleColor})`;
   }
 
-  // Calculăm lățimea gradientului în funcție de numărul de culori
   function getBgSize(colors) {
     const arr = getColorsArr(colors);
     if (arr && arr.length > 1) {
@@ -79,7 +65,7 @@
 
   $: totalPages = Math.ceil(allSortedPosts.length / itemsPerPage);
   $: displayedPosts = allSortedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  $: if (itemsPerPage) currentPage = 1;
+  $: itemsPerPage, currentSort, currentPage = 1;
 
   // --- HANDLERS ---
   function handleOutsideClick() {
@@ -146,7 +132,15 @@
           </button>
 
           {#if isSortMenuOpen}
-            <div class="dual-menu" transition:fly={{ y: 10, duration: 300, easing: cubicOut }} on:click|stopPropagation on:mouseleave={() => leechStyle.opacity = 0}>
+            <div
+              class="dual-menu"
+              role="menu"
+              aria-label="Meniu sortare articole"
+              on:click|stopPropagation
+              on:keydown={(e) => { if (e.key === 'Escape') isSortMenuOpen = false; e.stopPropagation(); }}
+              on:mouseleave={() => leechStyle.opacity = 0}
+              transition:fly={{ y: 10, duration: 300, easing: cubicOut }}
+            >
                 <div class="leech-indicator" style="top: {leechStyle.top}px; left: {leechStyle.left}px; width: {leechStyle.width}px; height: {leechStyle.height}px; opacity: {leechStyle.opacity};"></div>
                 
                 <div class="menu-column">
@@ -244,7 +238,7 @@
 
   .neon-title {
     font-family: 'Merriweather', serif; font-size: 3rem; text-align: center; margin-bottom: 1.25rem;
-    color: #eaf6ff; background: linear-gradient(90deg, #ffffff, #60a5fa, #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    color: #eaf6ff; background: linear-gradient(90deg, #ffffff, #60a5fa, #ffffff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
   }
 
@@ -307,17 +301,18 @@
   .item-wrapper::after {
     content: '';
     position: absolute;
-    inset: -1px; 
+    inset: -1px;
     border-radius: 12px;
-    padding: 1px; /* Border mai fin, așa cum ai cerut */
+    padding: 1px;
     background: var(--card-gradient);
-    background-size: var(--card-bg-size); /* Se asortează matematic pentru loop */
+    background-size: var(--card-bg-size);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0; 
+            mask-composite: exclude;
+    opacity: 0;
     transition: opacity 0.4s ease;
-    pointer-events: none; 
+    pointer-events: none;
   }
 
   .item-wrapper:hover::after {

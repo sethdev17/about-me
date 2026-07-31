@@ -1,11 +1,19 @@
 <script>
   import { onMount } from "svelte";
+  import { CONTACT_EMAIL, copyToClipboard } from "$lib/utils.js";
 
   export let t;
   export let isTouchDevice;
-  export let myEmail;
-  export let copyEmail;
-  export let emailCopied;
+  export let myEmail = CONTACT_EMAIL;
+  export let emailCopied = false;
+
+  async function copyEmail() {
+    const ok = await copyToClipboard(myEmail);
+    if (ok) {
+      emailCopied = true;
+      setTimeout(() => emailCopied = false, 2500);
+    }
+  }
 
   let animationState = 0;
   let animationTimeout;

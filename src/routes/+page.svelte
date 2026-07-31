@@ -4,8 +4,9 @@
   import Profile from '$lib/components/Profile.svelte';
   import Skills from '$lib/components/Skills.svelte';
   import Anime from '$lib/components/Anime.svelte';
-  import { language } from '$lib/stores.js';
+  import { language, currentSection } from '$lib/stores.js';
   import { translations } from '$lib/i18n.js';
+  import { CONTACT_EMAIL, SITE_URL, copyToClipboard } from '$lib/utils.js';
 
   export let data;
   let lang = 'ro';
@@ -20,18 +21,17 @@
 
   let showScrollTop = false;
   let observer;
-  const siteUrl = "https://sethdev.pages.dev";
-  const socialImage = `${siteUrl}/social-preview.png`;
+  const socialImage = `${SITE_URL}/social-preview.png`;
   let isTouchDevice = false;
   let emailCopied = false;
-  const myEmail = 'gg079331@gmail.com';
-  let currentSection = 'about';
+  const myEmail = CONTACT_EMAIL;
 
-  function copyEmail() {
-    navigator.clipboard.writeText(myEmail).then(() => {
+  async function copyEmail() {
+    const ok = await copyToClipboard(myEmail);
+    if (ok) {
       emailCopied = true;
       setTimeout(() => emailCopied = false, 2500);
-    });
+    }
   }
 
   function scrollToTop() {
@@ -48,9 +48,9 @@
       const pageHeight = document.body.offsetHeight;
       
       if (windowHeight + scrollPosition >= pageHeight - 100) {
-        if (currentSection !== 'contact') currentSection = 'contact';
+        currentSection.update(prev => prev !== 'contact' ? 'contact' : prev);
       } else if (scrollPosition < 250) {
-        if (currentSection !== 'about') currentSection = 'about';
+        currentSection.update(prev => prev !== 'about' ? 'about' : prev);
       }
     }
 
@@ -59,7 +59,7 @@
       const options = { rootMargin: '-40% 0px -50% 0px' };
       observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) currentSection = entry.target.id;
+          if (entry.isIntersecting) currentSection.set(entry.target.id);
         });
       }, options);
       sectionsToObserve.forEach(id => document.getElementById(id) && observer.observe(document.getElementById(id)));
@@ -78,7 +78,16 @@
 <svelte:head>
   <title>{t.title}</title>
   <meta name="description" content={t.metaDescription}>
-  <link rel="canonical" href={siteUrl}>
+  <link rel="canonical" href={SITE_URL}>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content={t.title}>
+  <meta property="og:description" content={t.metaDescription}>
+  <meta property="og:image" content={socialImage}>
+  <meta property="og:url" content={SITE_URL}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={t.title}>
+  <meta name="twitter:description" content={t.metaDescription}>
+  <meta name="twitter:image" content={socialImage}>
 </svelte:head>
 
 <div class="container">

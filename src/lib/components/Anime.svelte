@@ -16,7 +16,7 @@
 <div id="anime" class="top-anime-section">
   <h2>{t.topAnimeTitle}</h2>
   <ol class="top-anime-list">
-    {#each data.anime.slice(0, initialVisibleCount) as anime}
+    {#each data.anime.slice(0, initialVisibleCount) as anime, idx}
       <li>
         <a href={anime.url} target="_blank" rel="noopener noreferrer">
           {anime.title}
@@ -25,6 +25,9 @@
               src={anime.imageUrl}
               alt="Coperta {anime.title}"
               class="anime-thumbnail"
+              loading={idx > 5 ? 'lazy' : 'eager'}
+              decoding="async"
+              referrerpolicy="no-referrer"
             />
           {/if}
         </a>
@@ -41,6 +44,9 @@
                   src={anime.imageUrl}
                   alt="Coperta {anime.title}"
                   class="anime-thumbnail"
+                  loading="lazy"
+                  decoding="async"
+                  referrerpolicy="no-referrer"
                 />
               {/if}
             </a>

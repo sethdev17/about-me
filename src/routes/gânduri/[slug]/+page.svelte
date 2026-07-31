@@ -1,36 +1,24 @@
 <script>
-    import { page } from '$app/stores'; // Importăm asta ca să știm exact pe ce link suntem (pentru og:url)
+    import { page } from '$app/stores';
+    import { getColorsArr as getValidatedColorsArr, isValidHexColor, SITE_URL } from '$lib/utils.js';
     export let data;
 
-    // Extrage array-ul de culori corect, indiferent cum vin din Markdown
-    function getColorsArr(colors) {
-        if (!colors) return null;
-        if (Array.isArray(colors)) return colors;
-        if (typeof colors === 'string') {
-            if (colors.includes('[')) {
-                try { return JSON.parse(colors); } catch(e) { return null; }
-            }
-            return colors.split(',').map(c => c.trim());
-        }
-        return null;
-    }
+    $: arr = getValidatedColorsArr(data.meta.themeColors);
+    $: rawMain = (arr && arr[0]) || data.meta.themeColor || '#3b82f6';
+    $: mainColor = isValidHexColor(rawMain) ? rawMain : '#3b82f6';
 
-    // Calculăm culorile (pentru array) și fallback-ul (prima culoare)
-    $: arr = getColorsArr(data.meta.themeColors);
-    $: mainColor = (arr && arr[0]) || data.meta.themeColor || '#3b82f6';
-    
-    // MAGIA: Generăm dinamic un CSS modern (@property) care animă ÎNSĂȘI variabila
     $: dynamicStyle = (() => {
-        if (!arr || arr.length < 2) return ''; 
-        
+        if (!arr || arr.length < 2) return '';
+
         let steps = '';
         const pctStep = 100 / arr.length;
-        
+
         arr.forEach((color, i) => {
+            if (!isValidHexColor(color)) return;
             steps += `${i * pctStep}% { --anim-color: ${color}; }\n`;
         });
-        steps += `100% { --anim-color: ${arr[0]}; }`; 
-        
+        steps += `100% { --anim-color: ${arr[0]}; }`;
+
         return `
           @property --anim-color {
             syntax: '<color>';
@@ -56,14 +44,14 @@
     <meta property="og:title" content={data.meta.title} />
     <meta property="og:description" content={data.meta.description || 'Explorează acest gând din arhiva mea personală.'} />
     <!-- Foarte important: Linkul imaginii trebuie să fie absolut pt Social Media -->
-    <meta property="og:image" content={`https://sethdev.pages.dev${data.meta.backgroundImage}`} />
+    <meta property="og:image" content={`${SITE_URL}${data.meta.backgroundImage}`} />
     <meta property="og:url" content={$page.url.href} />
 
     <!-- PREVIEW PENTRU X / TWITTER -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={data.meta.title} />
     <meta name="twitter:description" content={data.meta.description || 'Explorează acest gând din arhiva mea personală.'} />
-    <meta name="twitter:image" content={`https://sethdev.pages.dev${data.meta.backgroundImage}`} />
+    <meta name="twitter:image" content={`${SITE_URL}${data.meta.backgroundImage}`} />
 
     <!-- Injectăm CSS-ul care ține variabila fluidă în viață -->
     {#if dynamicStyle}
