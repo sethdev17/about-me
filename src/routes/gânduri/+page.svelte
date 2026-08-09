@@ -135,6 +135,7 @@
             <div
               class="dual-menu"
               role="menu"
+              tabindex="-1"
               aria-label="Meniu sortare articole"
               on:click|stopPropagation
               on:keydown={(e) => { if (e.key === 'Escape') isSortMenuOpen = false; e.stopPropagation(); }}

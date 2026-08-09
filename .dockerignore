@@ -1,0 +1,44 @@
+# Git
+.git
+.gitignore
+.github
+
+# Dependențe
+node_modules
+
+# Build artefacte locale
+.svelte-kit
+build-node
+build
+dist
+.output
+
+# Variabile mediu
+.env
+.env.*
+!.env.example
+
+# Loguri
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+
+# Sistem de operare
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Teste
+coverage
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

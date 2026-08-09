@@ -1,14 +1,26 @@
 // src/routes/+page.server.js
-import { GITHUB_TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+import { browser } from '$app/environment';
 import animeData from '$lib/data/anime.json';
 
 export const prerender = false;
 
 const GITHUB_USERNAME = 'sethdev17';
 
+function getGitHubToken() {
+  try {
+    if (typeof process !== 'undefined' && process.env && process.env.GITHUB_TOKEN) {
+      return process.env.GITHUB_TOKEN;
+    }
+  } catch { /* ignore */ }
+  return env.GITHUB_TOKEN ?? '';
+}
+
 /** @param {typeof fetch} fetchFunc */
 async function getGithubProjects(fetchFunc) {
   try {
+    if (browser) return [];
+    const GITHUB_TOKEN = getGitHubToken();
     if (!GITHUB_TOKEN || GITHUB_TOKEN === 'ghp_YOUR_TOKEN_HERE' || !GITHUB_TOKEN.startsWith('ghp_')) {
       console.warn('⚠️ GITHUB_TOKEN nu a fost configurat.');
       return [];
