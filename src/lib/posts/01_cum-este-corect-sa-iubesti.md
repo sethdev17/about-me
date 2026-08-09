@@ -2,6 +2,7 @@
 title: "Cum este corect să iubești?"
 backgroundImage: "/backgrounds/iubire.jpg"
 themeColor: "#8A25B3"
+description: "Acest gând exprimă părerea mea personală despre cum este corect să iubești și cum să treci peste despărțiri într-un mod sănătos."
 date: "25 Martie 2026"
 ---
 

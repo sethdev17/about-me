@@ -1,42 +1,40 @@
 // src/routes/sitemap.xml/+server.js
-
-// Aici specifici URL-ul de bază al site-ului tău.
-const siteUrl = 'https://sethdev.pages.dev';
+import { SITE_URL } from '$lib/utils.js';
 
 /** @type {import('./$types').RequestHandler} */
-export async function GET({ fetch }) {
-  // Lista paginilor statice de pe site-ul tău.
-  // În cazul tău, este doar pagina principală.
-  const staticPages = [`/`]; 
-  
-  // (Opțional) Dacă vei adăuga un blog sau alte pagini dinamice, 
-  // vei prelua URL-urile lor aici, similar cu cum preluăm proiectele.
+export async function GET() {
+	const posts = import.meta.glob('$lib/posts/*.md', { eager: true });
+	const postSlugs = Object.keys(posts).map((path) => {
+		const slug = path.split('/').pop().replace('.md', '');
+		return `/gânduri/${slug}`;
+	});
 
-  const sitemap = `
-    <?xml version="1.0" encoding="UTF-8" ?>
-    <urlset
-      xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xhtml="https://www.w3.org/1999/xhtml"
-      xmlns:mobile="https://www.google.com/schemas/sitemap-mobile/1.0"
-      xmlns:news="https://www.google.com/schemas/sitemap-news/0.9"
-      xmlns:image="https://www.google.com/schemas/sitemap-image/1.1"
-      xmlns:video="https://www.google.com/schemas/sitemap-video/1.1"
-    >
-      ${staticPages.map(path => `
-        <url>
-          <loc>${siteUrl}${path}</loc>
-          <lastmod>${new Date().toISOString()}</lastmod>
-          <changefreq>monthly</changefreq>
-          <priority>1.0</priority>
-        </url>
-      `).join('')}
-    </urlset>
-  `.trim();
+	const pages = [
+		{ path: '/', priority: '1.0', freq: 'weekly' },
+		{ path: '/gânduri', priority: '0.9', freq: 'weekly' },
+		...postSlugs.map((s) => ({ path: s, priority: '0.8', freq: 'monthly' }))
+	];
 
-  return new Response(sitemap, {
-    headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': `public, max-age=${60 * 60 * 24}` // Cache pentru 24 de ore
-    }
-  });
+	const lastmod = new Date().toISOString();
+
+	const sitemap = `<?xml version="1.0" encoding="UTF-8" ?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+${pages
+	.map(
+		(p) => `  <url>
+    <loc>${SITE_URL}${p.path}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${p.freq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`
+	)
+	.join('\n')}
+</urlset>`;
+
+	return new Response(sitemap, {
+		headers: {
+			'Content-Type': 'application/xml',
+			'Cache-Control': `public, max-age=${60 * 60 * 24}`
+		}
+	});
 }

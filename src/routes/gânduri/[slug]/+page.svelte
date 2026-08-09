@@ -1,12 +1,69 @@
-<!-- src/routes/gânduri/[slug]/+page.svelte -->
 <script>
+    import { page } from '$app/stores';
+    import { getColorsArr as getValidatedColorsArr, isValidHexColor, SITE_URL } from '$lib/utils.js';
     export let data;
+
+    $: arr = getValidatedColorsArr(data.meta.themeColors);
+    $: rawMain = (arr && arr[0]) || data.meta.themeColor || '#3b82f6';
+    $: mainColor = isValidHexColor(rawMain) ? rawMain : '#3b82f6';
+
+    $: dynamicStyle = (() => {
+        if (!arr || arr.length < 2) return '';
+
+        let steps = '';
+        const pctStep = 100 / arr.length;
+
+        arr.forEach((color, i) => {
+            if (!isValidHexColor(color)) return;
+            steps += `${i * pctStep}% { --anim-color: ${color}; }\n`;
+        });
+        steps += `100% { --anim-color: ${arr[0]}; }`;
+
+        return `
+          @property --anim-color {
+            syntax: '<color>';
+            inherits: true;
+            initial-value: ${mainColor};
+          }
+          @keyframes postColorCycle {
+            ${steps}
+          }
+          .post-animated-colors {
+            animation: postColorCycle 6s linear infinite;
+          }
+        `;
+    })();
 </script>
 
-<div class="post-container" style="--accent-color: {data.meta.themeColor || '#3b82f6'};">
+<svelte:head>
+    <!-- TITLUL PAGINII ÎN BROWSER -->
+    <title>{data.meta.title} | Gândurile mele</title>
+
+    <!-- PREVIEW PENTRU DISCORD, WHATSAPP, FACEBOOK, ETC (OPEN GRAPH) -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={data.meta.title} />
+    <meta property="og:description" content={data.meta.description || 'Explorează acest gând din arhiva mea personală.'} />
+    <!-- Foarte important: Linkul imaginii trebuie să fie absolut pt Social Media -->
+    <meta property="og:image" content={`${SITE_URL}${data.meta.backgroundImage}`} />
+    <meta property="og:url" content={$page.url.href} />
+
+    <!-- PREVIEW PENTRU X / TWITTER -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={data.meta.title} />
+    <meta name="twitter:description" content={data.meta.description || 'Explorează acest gând din arhiva mea personală.'} />
+    <meta name="twitter:image" content={`${SITE_URL}${data.meta.backgroundImage}`} />
+
+    <!-- Injectăm CSS-ul care ține variabila fluidă în viață -->
+    {#if dynamicStyle}
+        {@html `<style>${dynamicStyle}</style>`}
+    {/if}
+</svelte:head>
+
+<div class="post-container {arr && arr.length > 1 ? 'post-animated-colors' : ''}" 
+     style="--accent-color: {arr && arr.length > 1 ? 'var(--anim-color, ' + mainColor + ')' : mainColor};">
+     
     <div class="post-banner" style="--bg-image: url('{data.meta.backgroundImage}');"></div>
 
-    <!-- Articolul sub imagine -->
     <article class="post-content">
         <h1>{data.meta.title}</h1>
         <div class="divider"></div>
@@ -25,24 +82,24 @@
         box-sizing: border-box;
     }
 
-    /* BANNERUL */
+    .post-container :global(::selection) {
+        background-color: var(--accent-color);
+        color: #ffffff;
+    }
+
     .post-banner {
         background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), var(--bg-image);
         background-size: cover;
         background-position: center;
-        
-        /* Dimensiuni */
         width: 100%;
         height: 350px;
         border: 2px solid rgb(0, 0, 0);
         border-radius: 16px;
-        
-        margin-bottom: 2.5rem; /* Spațiul dintre banner și titlu */
+        margin-bottom: 2.5rem;
         margin-top: 2rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
-    /* TEXTUL */
     .post-content {
         width: 100%;
         background: color-mix(in srgb, var(--accent-color) 4%, #010108);
@@ -101,7 +158,6 @@
         text-indent: 0 !important;
     }
 
-    /* --- DATA CREĂRII --- */
     :global(.post-text .data-creare) {
         display: block;
         text-align: right;
@@ -182,7 +238,7 @@
         padding: 10px;
         position: absolute;
         z-index: 100;
-        bottom: 150%; /* Apare deasupra */
+        bottom: 150%; 
         left: 50%;
         transform: translateX(-50%);
         opacity: 0;
@@ -196,7 +252,6 @@
         pointer-events: none;
     }
 
-    /* Săgeata bulei */
     :global(.tooltip-bubble::after) {
         content: "";
         position: absolute;
@@ -208,23 +263,20 @@
         border-color: var(--accent-color) transparent transparent transparent;
     }
 
-    
     :global(.term-tooltip:hover), 
     :global(.term-tooltip:hover .info-icon) {
        opacity: 1 !important;
     }
 
-    /* Hover effect */
     :global(.term-tooltip:hover .tooltip-bubble) {
         visibility: visible;
         opacity: 1;
         bottom: 130%;
     }
 
-    /* --- RESPONSIVITATE --- */
     @media (max-width: 767px) {
         .post-container {
-            padding: 15px 0.5rem; /* Spațiu mai mic pe marginile ecranului telefonului */
+            padding: 15px 0.5rem; 
         }
 
         .post-banner {

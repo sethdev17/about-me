@@ -1,7 +1,8 @@
 ---
 title: "De ce fuge omenirea de Dumnezeu?"
 backgroundImage: "/backgrounds/dumnezeu.jpg"
-themeColor: "red"
+themeColor: "#b00d0d"
+description: "Acest articol este despre credința în Dumnezeu și evitarea acestuia de majoritatea oamenilor din societate."
 date: "9 Aprilie 2026"
 ---
 

@@ -2,6 +2,7 @@
 title: "Lumea este dominată de rău"
 backgroundImage: "/backgrounds/inumanitate.jpg"
 themeColor: "#8bc3e0"
+description: "În acest articol ne dăm seama de cât de malefică este lumea în care trăim."
 date: "31 Martie 2026"
 ---
 

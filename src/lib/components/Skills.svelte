@@ -59,6 +59,7 @@
     padding: 1.2rem 1rem;
     transition: all 0.3s ease-in-out;
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
@@ -77,9 +78,15 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 50% 120%, hsla(from var(--glow-color) h s l / 0.35) 0, transparent 60%);
+    background: radial-gradient(circle at 50% 120%, var(--glow-color-fallback, rgba(96, 165, 250, 0.35)) 0, transparent 60%);
     opacity: 0;
     transition: opacity 0.4s ease-out;
+  }
+
+  @supports (color: hsl(from red h s l)) {
+    .language-card::after {
+      background: radial-gradient(circle at 50% 120%, hsla(from var(--glow-color) h s l / 0.35) 0, transparent 60%);
+    }
   }
 
   .language-icon,
@@ -90,7 +97,13 @@
 
   .language-card:hover {
     transform: translateY(-5px);
-    border-color: hsla(from var(--glow-color) h s l / 0.5);
+    border-color: rgba(96, 165, 250, 0.5);
+  }
+
+  @supports (color: hsl(from red h s l)) {
+    .language-card:hover {
+      border-color: hsla(from var(--glow-color) h s l / 0.5);
+    }
   }
 
   .language-card:hover::after {
