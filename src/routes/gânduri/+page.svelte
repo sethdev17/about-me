@@ -65,7 +65,11 @@
 
   $: totalPages = Math.ceil(allSortedPosts.length / itemsPerPage);
   $: displayedPosts = allSortedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  $: itemsPerPage, currentSort, currentPage = 1;
+  $: {
+    itemsPerPage;
+    currentSort;
+    currentPage = 1;
+  }
 
   // --- HANDLERS ---
   function handleOutsideClick() {

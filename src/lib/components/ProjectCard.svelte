@@ -20,6 +20,8 @@
     Go: "#00ADD8",
     EJS: "#a91e50",
     Kotlin: "#7E57C2",
+    Dockerfile: "#1D63ED",
+    NodeJS: "#3C873A"
   };
 
   // =============== LOGICĂ NOUĂ PENTRU PROCENTAJE ===============

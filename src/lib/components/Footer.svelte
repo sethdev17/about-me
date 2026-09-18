@@ -91,15 +91,6 @@
 </footer>
 
 <style>
-  /* FIX PENTRU SPAȚII ALBE (OVERFLOW) */
-  :global(html), :global(body) {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden; /* Împiedică scroll-ul orizontal și spațiile albe */
-    width: 100%;
-    background-color: #000; /* Fundal negru de siguranță */
-  }
-
   .main-footer {
     background: rgba(8, 8, 12, 0.98);
     backdrop-filter: blur(20px);

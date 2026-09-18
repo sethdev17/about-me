@@ -122,37 +122,6 @@
 </button>
 
 <style>
-  :global(html) {
-    background-color: #000 !important;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #f0f0f0;
-    background-color: #000;
-    overflow-y: auto;
-    overflow-x: hidden;
-    width: 100%;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  :global(::selection) {
-    background-color: rgba(100, 159, 207, 0.285);
-    color: white;
-  }
-
-  /* Forțează numărul să stea sus la anime */
-  :global(.anime-item) {
-    display: flex !important;
-    align-items: flex-start !important; 
-    padding: 10px 0;
-  }
-
   .container {
     display: flex;
     justify-content: center;
