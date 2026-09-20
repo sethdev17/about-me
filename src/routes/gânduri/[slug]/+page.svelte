@@ -87,13 +87,6 @@
         color: #ffffff;
     }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    /* BANNERUL */
-=======
->>>>>>> main
->>>>>>> 5f2a314 (modificari skills cards + gand nou)
     .post-banner {
         background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), var(--bg-image);
         background-size: cover;
