@@ -76,6 +76,7 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Profilul meu de GitHub"
+      style="--social-delay: 0s;"
     >
       <img src="/images/github.svg" alt="GitHub Icon" />
     </a>
@@ -84,16 +85,17 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contacteaza-ma pe Discord"
+      style="--social-delay: 0.2s;"
     >
       <img src="/images/discord.svg" alt="Discord Icon" />
     </a>
 
     {#if isTouchDevice}
-      <a href="mailto:{myEmail}" aria-label="Trimite un email">
+      <a href="mailto:{myEmail}" aria-label="Trimite un email" style="--social-delay: 0.4s;">
         <img src="/images/email.svg" alt="Email Icon" />
       </a>
     {:else}
-      <button on:click={copyEmail} aria-label="Copiaza adresa de email">
+      <button on:click={copyEmail} aria-label="Copiaza adresa de email" style="--social-delay: 0.4s;">
         {#if emailCopied}
           <span>✓ Copiat!</span>
         {:else}
@@ -107,6 +109,7 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Profilul meu de Instagram"
+      style="--social-delay: 0.6s;"
     >
       <img src="/images/instagram.svg" alt="Instagram Icon" />
     </a>
@@ -263,8 +266,8 @@
     background-color: rgba(25, 25, 30, 0.5);
     padding: 1.2rem 1.5rem;
     border-radius: 16px;
-    width: 750px;
-    max-width: 1000px;
+    width: 100%;
+    max-width: 600px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -291,13 +294,25 @@
     align-items: center;
     width: 48px;
     height: 48px;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 0.35s ease-out;
     background: transparent;
     border: none;
     padding: 0;
     cursor: pointer;
     font-family: inherit;
     border-radius: 50%;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .social-links a:hover,
+  .social-links button:hover {
+    transform: scale(1.18) translateZ(0);
+    filter: drop-shadow(0 0 14px rgba(150, 200, 255, 0.85));
   }
 
   .social-links a::before,
@@ -316,8 +331,32 @@
     box-shadow:
       0 0 15px rgba(29, 78, 216, 0.5),
       inset 0 0 10px rgba(255, 255, 255, 0.2);
-    animation: water-bubble 3s ease-in-out infinite;
+    animation: water-bubble 3.6s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+    animation-delay: var(--social-delay, 0s);
+    transition:
+      box-shadow 0.35s ease-out,
+      background 0.35s ease-out,
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: -1;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .social-links a:hover::before,
+  .social-links button:hover::before {
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(180, 220, 255, 0.55) 0,
+      rgba(59, 130, 246, 0.42) 50%,
+      rgba(59, 130, 246, 0.1) 70%,
+      transparent 80%
+    );
+    box-shadow:
+      0 0 32px rgba(59, 130, 246, 0.85),
+      0 0 60px rgba(150, 200, 255, 0.35),
+      inset 0 0 16px rgba(255, 255, 255, 0.4);
   }
 
   .social-links a::after,
@@ -328,19 +367,40 @@
     height: 60px;
     border-radius: 50%;
     border: 1px solid rgba(150, 200, 255, 0.3);
-    animation: ripple 2s ease-out infinite;
+    animation: ripple 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation-delay: var(--social-delay, 0s);
     opacity: 0;
     z-index: -2;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .social-links a:hover::after,
+  .social-links button:hover::after {
+    border-width: 2px;
+    border-color: rgba(180, 220, 255, 0.65);
   }
 
   .social-links a img,
   .social-links button img {
     width: 28px;
     height: 28px;
-    filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
     transition:
-      filter 0.3s ease-out,
-      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      filter 0.35s ease-out,
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, filter;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .social-links a:hover img,
+  .social-links button:hover img {
+    filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(180, 220, 255, 0.95));
+    transform: scale(1.08) translateZ(0);
   }
 
   .social-links button span {
@@ -351,27 +411,16 @@
   }
 
   @keyframes water-bubble {
-    0%,
-    100% {
-      transform: scale(1) translateY(0);
-      opacity: 0.8;
-    }
-    50% {
-      transform: scale(1.05) translateY(-2px);
-      opacity: 1;
-    }
+    0%   { transform: scale(1) translateY(0) translateZ(0); opacity: 0.75; }
+    25%  { transform: scale(1.025) translateY(-1px) translateZ(0); opacity: 0.9; }
+    50%  { transform: scale(1.07) translateY(-3px) translateZ(0); opacity: 1; }
+    75%  { transform: scale(1.025) translateY(-1px) translateZ(0); opacity: 0.9; }
+    100% { transform: scale(1) translateY(0) translateZ(0); opacity: 0.75; }
   }
 
   @keyframes ripple {
-    0%,
-    100% {
-      transform: scale(1);
-      opacity: 0.3;
-    }
-    100% {
-      transform: scale(1.5);
-      opacity: 0;
-    }
+    0%   { transform: scale(0.9) translateZ(0); opacity: 0.35; }
+    100% { transform: scale(1.65) translateZ(0); opacity: 0; }
   }
 
   :global(.saber) {

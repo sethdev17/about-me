@@ -1,6 +1,6 @@
 ---
 title: "Este o boală să fii atras de același gen sau este un efect biologic și normal format din naștere?"
-backgroundImage: "/images/gay.jpg"
+backgroundImage: "/backgrounds/gay.jpg"
 themeColors: ["#F54927", "#FF8900", "#FFF200", "#3C911C", "#1F65CC", "#7E1FCC"]
 description: "Un articol despre cum se formează orientarea sexuală și identitatea de gen biologic în pântece, hormonii responsabili și miturile societății."
 date: "25 Iulie 2026"

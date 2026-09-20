@@ -122,6 +122,7 @@
 </button>
 
 <style>
+<<<<<<< HEAD
   :global(html) {
     background-color: #000 !important;
     margin: 0;
@@ -153,6 +154,8 @@
     padding: 10px 0;
   }
 
+=======
+>>>>>>> main
   .container {
     display: flex;
     justify-content: center;

@@ -3,6 +3,8 @@
   import { cubicOut } from 'svelte/easing';
   import { getColorsArr, isValidHexColor } from '$lib/utils.js';
 
+  import { getColorsArr, isValidHexColor } from '$lib/utils.js';
+
   export let data;
 
   // --- STATE ---
@@ -19,6 +21,7 @@
   // --- HELPERS ---
   const luni = { 'Ianuarie': 0, 'Februarie': 1, 'Martie': 2, 'Aprilie': 3, 'Mai': 4, 'Iunie': 5, 'Iulie': 6, 'August': 7, 'Septembrie': 8, 'Octombrie': 9, 'Noiembrie': 10, 'Decembrie': 11 };
 
+
   function parseDate(d) {
     if (!d) return 0;
     const p = d.split(' ');
@@ -28,7 +31,33 @@
   function hexToRgb(hex) {
     if (!hex || !isValidHexColor(hex)) return '96, 165, 250';
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+    if (!hex || !isValidHexColor(hex)) return '96, 165, 250';
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '96, 165, 250';
+  }
+
+  function getMainColor(colors, fallback) {
+    const arr = getColorsArr(colors);
+    return (arr && arr[0]) || (isValidHexColor(fallback) ? fallback : '#60a5fa');
+  }
+
+  function getGradient(colors, fallback) {
+    const arr = getColorsArr(colors);
+    if (arr && arr.length > 1) {
+      const extended = [...arr, arr[0], arr[1]];
+      return `linear-gradient(90deg, ${extended.join(', ')})`;
+    }
+    const singleColor = (arr && arr[0]) || (isValidHexColor(fallback) ? fallback : '#60a5fa');
+    return `linear-gradient(90deg, ${singleColor}, ${singleColor})`;
+  }
+
+  function getBgSize(colors) {
+    const arr = getColorsArr(colors);
+    if (arr && arr.length > 1) {
+      const segments = arr.length + 1;
+      return `${segments * 100}% 100%`;
+    }
+    return '100% 100%';
   }
 
   function getMainColor(colors, fallback) {
@@ -65,7 +94,11 @@
 
   $: totalPages = Math.ceil(allSortedPosts.length / itemsPerPage);
   $: displayedPosts = allSortedPosts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  $: itemsPerPage, currentSort, currentPage = 1;
+  $: {
+    itemsPerPage;
+    currentSort;
+    currentPage = 1;
+  }
 
   // --- HANDLERS ---
   function handleOutsideClick() {
@@ -142,6 +175,16 @@
               on:mouseleave={() => leechStyle.opacity = 0}
               transition:fly={{ y: 10, duration: 300, easing: cubicOut }}
             >
+            <div
+              class="dual-menu"
+              role="menu"
+              tabindex="-1"
+              aria-label="Meniu sortare articole"
+              on:click|stopPropagation
+              on:keydown={(e) => { if (e.key === 'Escape') isSortMenuOpen = false; e.stopPropagation(); }}
+              on:mouseleave={() => leechStyle.opacity = 0}
+              transition:fly={{ y: 10, duration: 300, easing: cubicOut }}
+            >
                 <div class="leech-indicator" style="top: {leechStyle.top}px; left: {leechStyle.left}px; width: {leechStyle.width}px; height: {leechStyle.height}px; opacity: {leechStyle.opacity};"></div>
                 
                 <div class="menu-column">
@@ -167,6 +210,14 @@
 
       <ul>
         {#each displayedPosts as post (post.slug)}
+          {@const mainColor = getMainColor(post.themeColors, post.themeColor)}
+          
+          <li class="gand-item" 
+              style="--accent-post: {mainColor}; 
+                     --accent-post-rgb: {hexToRgb(mainColor)};
+                     --card-gradient: {getGradient(post.themeColors, post.themeColor)};
+                     --card-bg-size: {getBgSize(post.themeColors)};">
+                     
           {@const mainColor = getMainColor(post.themeColors, post.themeColor)}
           
           <li class="gand-item" 
@@ -240,6 +291,7 @@
   .neon-title {
     font-family: 'Merriweather', serif; font-size: 3rem; text-align: center; margin-bottom: 1.25rem;
     color: #eaf6ff; background: linear-gradient(90deg, #ffffff, #60a5fa, #ffffff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    color: #eaf6ff; background: linear-gradient(90deg, #ffffff, #60a5fa, #ffffff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
   }
 
@@ -294,9 +346,54 @@
 
   .item-wrapper:hover {
     transform: translateY(-3px); border-color: transparent; 
+    transform: translateY(-3px); border-color: transparent; 
     background: radial-gradient(circle at left, rgba(var(--accent-post-rgb), 0.1) 0%, transparent 100%);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5), 0 0 15px -5px var(--accent-post);
   }
+
+  /* REMA ANIMATĂ: BORDER SUBȚIRE ȘI LOOP PERFECT */
+  .item-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 12px;
+    padding: 1px;
+    background: var(--card-gradient);
+    background-size: var(--card-bg-size);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .item-wrapper:hover::after {
+    opacity: 1;
+    animation: gradientMove 3s linear infinite; /* Animația ramei exterioare */
+  }
+
+  
+  .item-wrapper::before {
+    content: ''; position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%);
+    width: 4px; height: 40%; 
+    background: var(--card-gradient);
+    background-size: var(--card-bg-size);
+    border-radius: 4px; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .item-wrapper:hover::before { 
+    height: 70%; 
+    box-shadow: 0 0 15px var(--accent-post); 
+    animation: gradientMove 3s linear infinite; /* Se plimbă curcubeul pe ea pe hover */
+  }
+
+  /* KEYFRAMES PT LOOP-UL PERFECT */
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
 
   /* REMA ANIMATĂ: BORDER SUBȚIRE ȘI LOOP PERFECT */
   .item-wrapper::after {
@@ -381,6 +478,7 @@
     color: #999;
   }
 
+  /* --- PAGINATION --- */
   /* --- PAGINATION --- */
   .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 4rem; font-family: inherit; }
   
