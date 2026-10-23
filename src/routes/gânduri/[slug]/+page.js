@@ -17,13 +17,25 @@ export async function load({ params }) {
   }
 
   try {
-    const post = await import(`../../../lib/posts/${params.slug}.md`);
+    // Încercăm să încărcăm versiunea română (default)
+    const postRo = await import(`../../../lib/posts/${params.slug}.md`);
+    
+    // Încercăm să vedem dacă există o versiune engleză manuală
+    let postEn = null;
+    try {
+      postEn = await import(`../../../lib/posts/${params.slug}.en.md`);
+    } catch (e) {
+      // Nu există versiune engleză manuală, e ok
+    }
+
     return {
-      content: post.default,
-      meta: post.metadata,
-      themeColor: post.metadata.themeColor || '#60a5fa',
-      themeColors: post.metadata.themeColors,
-      description: post.metadata.description
+      contentRo: postRo.default,
+      metaRo: postRo.metadata,
+      contentEn: postEn ? postEn.default : null,
+      metaEn: postEn ? postEn.metadata : null,
+      themeColor: postRo.metadata.themeColor || '#60a5fa',
+      themeColors: postRo.metadata.themeColors,
+      description: postRo.metadata.description
     };
   } catch (e) {
     throw error(404, 'Gândul nu a fost găsit');

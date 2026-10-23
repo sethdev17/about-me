@@ -2,18 +2,30 @@
 export async function load() {
   const posts = import.meta.glob('$lib/posts/*.md', { eager: true });
   
-  const summaries = Object.entries(posts)
-    .filter(([_, post]) => post && post.metadata)
-    .map(([path, post]) => {
-      const slug = path.split('/').pop().replace('.md', '');
-      return {
-        slug,
-        title: post.metadata.title || 'Gând fără titlu', // Fallback în caz că lipsește doar titlul
-        date: post.metadata.date,
-        themeColor: post.metadata.themeColor || '#60a5fa',
-        themeColors: post.metadata.themeColors
-      };
-    });
+  const postMap = {};
+
+  Object.entries(posts).forEach(([path, post]) => {
+    if (!post || !post.metadata) return;
+    
+    const fileName = path.split('/').pop();
+    const isEn = fileName.endsWith('.en.md');
+    const slug = isEn ? fileName.replace('.en.md', '') : fileName.replace('.md', '');
+
+    if (!postMap[slug]) {
+      postMap[slug] = { slug };
+    }
+
+    if (isEn) {
+      postMap[slug].titleEn = post.metadata.title;
+    } else {
+      postMap[slug].titleRo = post.metadata.title || 'Gând fără titlu';
+      postMap[slug].date = post.metadata.date;
+      postMap[slug].themeColor = post.metadata.themeColor || '#60a5fa';
+      postMap[slug].themeColors = post.metadata.themeColors;
+    }
+  });
+
+  const summaries = Object.values(postMap);
 
   return { summaries };
 }

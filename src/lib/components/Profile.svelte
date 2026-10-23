@@ -295,8 +295,8 @@
     width: 48px;
     height: 48px;
     transition:
-      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-      filter 0.35s ease-out;
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.45s ease-out;
     background: transparent;
     border: none;
     padding: 0;
@@ -304,15 +304,14 @@
     font-family: inherit;
     border-radius: 50%;
     will-change: transform;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover,
   .social-links button:hover {
-    transform: scale(1.18) translateZ(0);
-    filter: drop-shadow(0 0 14px rgba(150, 200, 255, 0.85));
+    transform: translate3d(0, -2px, 0) scale(1.06);
+    filter: drop-shadow(0 0 9px rgba(150, 200, 255, 0.5));
   }
 
   .social-links a::before,
@@ -331,32 +330,31 @@
     box-shadow:
       0 0 15px rgba(29, 78, 216, 0.5),
       inset 0 0 10px rgba(255, 255, 255, 0.2);
-    animation: water-bubble 3.6s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+    animation: water-bubble 5s ease-in-out infinite;
     animation-delay: var(--social-delay, 0s);
     transition:
-      box-shadow 0.35s ease-out,
-      background 0.35s ease-out,
-      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow 0.45s ease-out,
+      background 0.45s ease-out,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: -1;
     will-change: transform, opacity;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover::before,
   .social-links button:hover::before {
     background: radial-gradient(
-      circle at 30% 30%,
-      rgba(180, 220, 255, 0.55) 0,
-      rgba(59, 130, 246, 0.42) 50%,
-      rgba(59, 130, 246, 0.1) 70%,
-      transparent 80%
+      circle at 32% 30%,
+      rgba(180, 220, 255, 0.4) 0,
+      rgba(59, 130, 246, 0.26) 55%,
+      rgba(59, 130, 246, 0.08) 75%,
+      transparent 85%
     );
     box-shadow:
-      0 0 32px rgba(59, 130, 246, 0.85),
-      0 0 60px rgba(150, 200, 255, 0.35),
-      inset 0 0 16px rgba(255, 255, 255, 0.4);
+      0 0 16px rgba(59, 130, 246, 0.5),
+      0 0 32px rgba(150, 200, 255, 0.2),
+      inset 0 0 12px rgba(255, 255, 255, 0.26);
   }
 
   .social-links a::after,
@@ -366,21 +364,20 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: 1px solid rgba(150, 200, 255, 0.3);
-    animation: ripple 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    border: 1px solid rgba(150, 200, 255, 0.22);
+    animation: ripple 3.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
     animation-delay: var(--social-delay, 0s);
     opacity: 0;
     z-index: -2;
     will-change: transform, opacity;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover::after,
   .social-links button:hover::after {
-    border-width: 2px;
-    border-color: rgba(180, 220, 255, 0.65);
+    border-width: 1.5px;
+    border-color: rgba(180, 220, 255, 0.45);
   }
 
   .social-links a img,
@@ -389,18 +386,17 @@
     height: 28px;
     filter: brightness(0) invert(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
     transition:
-      filter 0.35s ease-out,
-      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter 0.45s ease-out,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform, filter;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover img,
   .social-links button:hover img {
-    filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(180, 220, 255, 0.95));
-    transform: scale(1.08) translateZ(0);
+    filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(180, 220, 255, 0.7));
+    transform: scale(1.05) translate3d(0, 0, 0);
   }
 
   .social-links button span {
@@ -411,16 +407,20 @@
   }
 
   @keyframes water-bubble {
-    0%   { transform: scale(1) translateY(0) translateZ(0); opacity: 0.75; }
-    25%  { transform: scale(1.025) translateY(-1px) translateZ(0); opacity: 0.9; }
-    50%  { transform: scale(1.07) translateY(-3px) translateZ(0); opacity: 1; }
-    75%  { transform: scale(1.025) translateY(-1px) translateZ(0); opacity: 0.9; }
-    100% { transform: scale(1) translateY(0) translateZ(0); opacity: 0.75; }
+    0%, 100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.55;
+    }
+    50% {
+      transform: translate3d(0, -2px, 0) scale(1.03);
+      opacity: 0.8;
+    }
   }
 
   @keyframes ripple {
-    0%   { transform: scale(0.9) translateZ(0); opacity: 0.35; }
-    100% { transform: scale(1.65) translateZ(0); opacity: 0; }
+    0%   { transform: scale(0.92) translate3d(0, 0, 0); opacity: 0; }
+    20%  { opacity: 0.3; }
+    100% { transform: scale(1.3) translate3d(0, 0, 0); opacity: 0; }
   }
 
   :global(.saber) {

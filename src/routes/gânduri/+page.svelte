@@ -2,6 +2,8 @@
   import { fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   import { getColorsArr, isValidHexColor } from '$lib/utils.js';
+  import AutoTranslate from '$lib/components/AutoTranslate.svelte';
+  import { language } from '$lib/stores.js';
 
   export let data;
 
@@ -57,9 +59,12 @@
 
   // --- LOGICĂ SORTARE ȘI PAGINARE ---
   $: allSortedPosts = [...data.summaries].sort((a, b) => {
+    const titleA = ($language === 'en' && a.titleEn) ? a.titleEn : a.titleRo;
+    const titleB = ($language === 'en' && b.titleEn) ? b.titleEn : b.titleRo;
+    
     if (currentSort === 'newest') return parseDate(b.date) - parseDate(a.date);
     if (currentSort === 'oldest') return parseDate(a.date) - parseDate(b.date);
-    if (currentSort === 'az') return a.title.localeCompare(b.title);
+    if (currentSort === 'az') return titleA.localeCompare(titleB);
     return 0;
   });
 
@@ -96,7 +101,6 @@
   }
 </script>
 
-
 <svelte:head>
   <title>Gândurile mele | Arhivă Personală</title>
   <meta name="description" content="Această secțiune este un sanctuar personal, un colț digital unde îmi aștern ideile, teoriile și reflecțiile. Bun venit în mintea mea." />
@@ -110,7 +114,6 @@
   <meta name="twitter:description" content="Un colț digital unde îmi aștern ideile, teoriile și reflecțiile." />
   <meta name="twitter:image" content="https://sethdev.pages.dev/og-ganduri.png" />
 </svelte:head>
-
 
 <svelte:window on:click={handleOutsideClick} />
 
@@ -128,7 +131,7 @@
     <div class="lista-ganduri">
       <div class="header-arhivă">
         <h2>Arhivă <span class="post-count">({allSortedPosts.length} articole)</span></h2>
-        
+
         <div class="sort-container">
           <button class="sort-trigger" on:click|stopPropagation={() => isSortMenuOpen = !isSortMenuOpen} class:active={isSortMenuOpen}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
@@ -147,7 +150,7 @@
               transition:fly={{ y: 10, duration: 300, easing: cubicOut }}
             >
                 <div class="leech-indicator" style="top: {leechStyle.top}px; left: {leechStyle.left}px; width: {leechStyle.width}px; height: {leechStyle.height}px; opacity: {leechStyle.opacity};"></div>
-                
+
                 <div class="menu-column">
                     <span class="label">Ordine</span>
                     <button on:mouseenter={moveLeech} on:click={() => {currentSort = 'default'; isSortMenuOpen = false}} class:selected={currentSort === 'default'}><span class="dot"></span> Default</button>
@@ -172,16 +175,17 @@
       <ul>
         {#each displayedPosts as post (post.slug)}
           {@const mainColor = getMainColor(post.themeColors, post.themeColor)}
-          
-          <li class="gand-item" 
-              style="--accent-post: {mainColor}; 
+          {@const displayTitle = ($language === 'en' && post.titleEn) ? post.titleEn : post.titleRo}
+
+          <li class="gand-item"
+              style="--accent-post: {mainColor};
                      --accent-post-rgb: {hexToRgb(mainColor)};
                      --card-gradient: {getGradient(post.themeColors, post.themeColor)};
                      --card-bg-size: {getBgSize(post.themeColors)};">
-                     
+
             <div class="item-wrapper">
               <a href={"/gânduri/" + post.slug} class="post-link">
-                <span class="post-title">{post.title}</span>
+                <span class="post-title">{displayTitle}</span>
               </a>
 
               <div class="date-controls">
@@ -199,11 +203,11 @@
             <button class="p-btn prev" on:click={() => changePage(currentPage - 1)} disabled={currentPage === 1} aria-label="Înapoi">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </button>
-            
+
             {#each Array(totalPages) as _, i}
                 <button class="p-num" class:active={currentPage === i + 1} on:click={() => changePage(i + 1)}>{i+1}</button>
             {/each}
-            
+
             <button class="p-btn next" on:click={() => changePage(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Înainte">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </button>
@@ -213,11 +217,13 @@
   </div>
 </div>
 
+<AutoTranslate containerSelector=".ganduri-content" />
+
 <style>
   /* FIX FONT GLOBALS */
-  :global(*) { 
-    -webkit-tap-highlight-color: transparent; 
-    box-sizing: border-box; 
+  :global(*) {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
   }
 
   :global(body) {
@@ -229,16 +235,16 @@
   /* WRAPPER & BACKGROUND */
   .ganduri-page-wrapper {
     position: relative; background: #000; display: flex; flex-direction: column; align-items: center;
-    min-height: 85vh; padding: 8rem 2rem 6rem; box-sizing: border-box; 
+    min-height: 85vh; padding: 8rem 2rem 6rem; box-sizing: border-box;
   }
 
-  .ganduri-background-effects { 
-    position: absolute; inset: 0; pointer-events: none; z-index: 0; 
+  .ganduri-background-effects {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
     overflow: hidden;
   }
-  
+
   .wave { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(29, 78, 216, 0.15) 0%, transparent 70%); width: 1000px; height: 1000px; opacity: 0.2; }
-  .wave:nth-child(1) { top: -20%; left: -10%; } 
+  .wave:nth-child(1) { top: -20%; left: -10%; }
   .wave:nth-child(2) { bottom: -20%; right: -10%; }
 
   .neon-title {
@@ -252,7 +258,7 @@
   /* --- HEADER & SORT --- */
   .header-arhivă { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 2rem; width: 100%; max-width: 800px; }
   .header-arhivă h2 { color: #fff; font-size: 1.2rem; margin: 0; padding-bottom: 0.5rem; display: flex; align-items: baseline; gap: 8px;}
-  
+
   .post-count {
     font-size: 0.85rem;
     color: #888;
@@ -270,12 +276,12 @@
 
   .menu-column { width: 150px; display: flex; flex-direction: column; gap: 4px; padding: 4px; }
   .menu-column .label { font-size: 0.6rem; text-transform: uppercase; color: #444; margin: 8px 12px; letter-spacing: 1px; font-weight: 800; font-family: inherit; }
-  
-  .menu-column button { 
-    position: relative; background: transparent; border: none; color: #888; text-align: left; padding: 10px 12px; 
+
+  .menu-column button {
+    position: relative; background: transparent; border: none; color: #888; text-align: left; padding: 10px 12px;
     cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; z-index: 1; transition: 0.2s; font-family: inherit;
   }
-  
+
   .menu-column button.selected { color: #60a5fa; font-weight: 600; }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: 0.3s; }
   .selected .dot { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; }
@@ -289,7 +295,7 @@
 
   /* --- LIST ITEMS --- */
   ul { list-style: none; padding: 0; width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 0.8rem; }
-  
+
   .item-wrapper {
     position: relative; display: flex; align-items: center; background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; overflow: visible;
@@ -297,7 +303,7 @@
   }
 
   .item-wrapper:hover {
-    transform: translateY(-3px); border-color: transparent; 
+    transform: translateY(-3px); border-color: transparent;
     background: radial-gradient(circle at left, rgba(var(--accent-post-rgb), 0.1) 0%, transparent 100%);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5), 0 0 15px -5px var(--accent-post);
   }
@@ -325,17 +331,16 @@
     animation: gradientMove 3s linear infinite; /* Animația ramei exterioare */
   }
 
-  
   .item-wrapper::before {
     content: ''; position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%);
-    width: 4px; height: 40%; 
+    width: 4px; height: 40%;
     background: var(--card-gradient);
     background-size: var(--card-bg-size);
     border-radius: 4px; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   }
-  .item-wrapper:hover::before { 
-    height: 70%; 
-    box-shadow: 0 0 15px var(--accent-post); 
+  .item-wrapper:hover::before {
+    height: 70%;
+    box-shadow: 0 0 15px var(--accent-post);
     animation: gradientMove 3s linear infinite; /* Se plimbă curcubeul pe ea pe hover */
   }
 
@@ -345,35 +350,34 @@
     100% { background-position: 100% 50%; }
   }
 
-
   /* TITLU */
-  .post-link { 
-    flex: 1; 
-    min-width: 0; 
-    padding: 1.2rem 1rem 1.2rem 2.5rem; 
-    text-decoration: none; color: #ccc; 
-    font-weight: 600; font-family: inherit; font-size: 1.05rem; 
-    transition: 0.3s; 
+  .post-link {
+    flex: 1;
+    min-width: 0;
+    padding: 1.2rem 1rem 1.2rem 2.5rem;
+    text-decoration: none; color: #ccc;
+    font-weight: 600; font-family: inherit; font-size: 1.05rem;
+    transition: 0.3s;
     display: flex;
     align-items: center;
   }
-  
+
   .item-wrapper:hover .post-link { color: #fff; }
-  
-  .post-title { 
-    display: block; 
-    white-space: normal; 
+
+  .post-title {
+    display: block;
+    white-space: normal;
     word-break: break-word;
-    line-height: 1.4; 
+    line-height: 1.4;
   }
 
   /* --- DATA --- */
-  .date-controls { 
-    flex-shrink: 0; 
-    padding-right: 1.5rem; 
-    text-align: right; 
+  .date-controls {
+    flex-shrink: 0;
+    padding-right: 1.5rem;
+    text-align: right;
   }
-  
+
   .date-discreet {
     font-family: 'Merriweather', serif;
     font-size: 0.85rem;
@@ -387,9 +391,9 @@
 
   /* --- PAGINATION --- */
   .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 4rem; font-family: inherit; }
-  
-  .p-btn { 
-    background: transparent; border: none; color: #777; 
+
+  .p-btn {
+    background: transparent; border: none; color: #777;
     width: 44px; height: 44px; cursor: pointer; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     display: flex; align-items: center; justify-content: center;
   }
@@ -398,24 +402,24 @@
   .p-btn.prev:not(:disabled):hover { transform: translateX(-4px); }
   .p-btn.next:not(:disabled):hover { transform: translateX(4px); }
 
-  .p-num { 
-    background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #ccc; 
+  .p-num {
+    background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #ccc;
     width: 40px; height: 40px; border-radius: 8px; cursor: pointer; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     display: flex; align-items: center; justify-content: center; font-family: inherit; font-weight: 500; font-size: 0.95rem;
   }
-  
-  .p-num:not(.active):hover { 
-    background: rgba(255, 255, 255, 0.08); 
-    border-color: rgba(255, 255, 255, 0.3); 
-    color: #fff; 
+
+  .p-num:not(.active):hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
   }
-  
-  .p-num.active { 
-    background: #fff; 
-    color: #000; 
-    border-color: #fff; 
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); 
-    transform: scale(1.05); 
+
+  .p-num.active {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
     font-weight: 700;
   }
 
@@ -423,21 +427,21 @@
   @media (max-width: 767px) {
     .ganduri-page-wrapper { padding: 6rem 1.25rem 4rem; min-height: auto; }
     .neon-title { font-size: 2.3rem; }
-    
+
     .header-arhivă h2 { font-size: 1.1rem; flex-wrap: wrap; }
-    
+
     .dual-menu { flex-direction: column; width: 175px; }
     .divider { height: 1px; width: 85%; margin: 4px auto; }
-    
-    .post-link { 
-      padding: 1rem 0.5rem 1rem 1.8rem; 
-      font-size: 1rem; 
+
+    .post-link {
+      padding: 1rem 0.5rem 1rem 1.8rem;
+      font-size: 1rem;
       font-weight: 500;
     }
-    
+
     .date-controls { padding-right: 1.2rem; }
     .date-discreet { font-size: 0.75rem; }
-    
+
     .leech-indicator { display: none !important; }
     .p-btn { width: 38px; height: 38px; }
     .p-num { width: 36px; height: 36px; font-size: 0.85rem; }
