@@ -2,6 +2,8 @@
   import { fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   import { getColorsArr, isValidHexColor } from '$lib/utils.js';
+  import AutoTranslate from '$lib/components/AutoTranslate.svelte';
+  import { language } from '$lib/stores.js';
 
   export let data;
 
@@ -57,9 +59,12 @@
 
   // --- LOGICĂ SORTARE ȘI PAGINARE ---
   $: allSortedPosts = [...data.summaries].sort((a, b) => {
+    const titleA = ($language === 'en' && a.titleEn) ? a.titleEn : a.titleRo;
+    const titleB = ($language === 'en' && b.titleEn) ? b.titleEn : b.titleRo;
+    
     if (currentSort === 'newest') return parseDate(b.date) - parseDate(a.date);
     if (currentSort === 'oldest') return parseDate(a.date) - parseDate(b.date);
-    if (currentSort === 'az') return a.title.localeCompare(b.title);
+    if (currentSort === 'az') return titleA.localeCompare(titleB);
     return 0;
   });
 
@@ -170,6 +175,7 @@
       <ul>
         {#each displayedPosts as post (post.slug)}
           {@const mainColor = getMainColor(post.themeColors, post.themeColor)}
+          {@const displayTitle = ($language === 'en' && post.titleEn) ? post.titleEn : post.titleRo}
 
           <li class="gand-item"
               style="--accent-post: {mainColor};
@@ -179,7 +185,7 @@
 
             <div class="item-wrapper">
               <a href={"/gânduri/" + post.slug} class="post-link">
-                <span class="post-title">{post.title}</span>
+                <span class="post-title">{displayTitle}</span>
               </a>
 
               <div class="date-controls">
@@ -210,6 +216,8 @@
     </div>
   </div>
 </div>
+
+<AutoTranslate containerSelector=".ganduri-content" />
 
 <style>
   /* FIX FONT GLOBALS */

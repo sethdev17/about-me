@@ -304,14 +304,13 @@
     font-family: inherit;
     border-radius: 50%;
     will-change: transform;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover,
   .social-links button:hover {
-    transform: scale(1.18) translateZ(0);
+    transform: scale(1.18) translate3d(0, 0, 0);
     filter: drop-shadow(0 0 14px rgba(150, 200, 255, 0.85));
   }
 
@@ -331,7 +330,7 @@
     box-shadow:
       0 0 15px rgba(29, 78, 216, 0.5),
       inset 0 0 10px rgba(255, 255, 255, 0.2);
-    animation: water-bubble 3.6s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+    animation: water-bubble 4s ease-in-out infinite;
     animation-delay: var(--social-delay, 0s);
     transition:
       box-shadow 0.35s ease-out,
@@ -339,9 +338,8 @@
       transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: -1;
     will-change: transform, opacity;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover::before,
@@ -367,14 +365,13 @@
     height: 60px;
     border-radius: 50%;
     border: 1px solid rgba(150, 200, 255, 0.3);
-    animation: ripple 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation: ripple 2.4s linear infinite;
     animation-delay: var(--social-delay, 0s);
     opacity: 0;
     z-index: -2;
     will-change: transform, opacity;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover::after,
@@ -392,15 +389,14 @@
       filter 0.35s ease-out,
       transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     will-change: transform, filter;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .social-links a:hover img,
   .social-links button:hover img {
     filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(180, 220, 255, 0.95));
-    transform: scale(1.08) translateZ(0);
+    transform: scale(1.08) translate3d(0, 0, 0);
   }
 
   .social-links button span {
@@ -411,16 +407,19 @@
   }
 
   @keyframes water-bubble {
-    0%   { transform: scale(1) translateY(0) translateZ(0); opacity: 0.75; }
-    25%  { transform: scale(1.025) translateY(-1px) translateZ(0); opacity: 0.9; }
-    50%  { transform: scale(1.07) translateY(-3px) translateZ(0); opacity: 1; }
-    75%  { transform: scale(1.025) translateY(-1px) translateZ(0); opacity: 0.9; }
-    100% { transform: scale(1) translateY(0) translateZ(0); opacity: 0.75; }
+    0%, 100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translate3d(0, -4px, 0) scale(1.06);
+      opacity: 1;
+    }
   }
 
   @keyframes ripple {
-    0%   { transform: scale(0.9) translateZ(0); opacity: 0.35; }
-    100% { transform: scale(1.65) translateZ(0); opacity: 0; }
+    0%   { transform: scale(0.9) translate3d(0, 0, 0); opacity: 0.4; }
+    100% { transform: scale(1.6) translate3d(0, 0, 0); opacity: 0; }
   }
 
   :global(.saber) {

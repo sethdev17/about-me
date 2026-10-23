@@ -1,10 +1,16 @@
 <script>
     import { page } from '$app/stores';
     import { getColorsArr as getValidatedColorsArr, isValidHexColor, SITE_URL } from '$lib/utils.js';
+    import AutoTranslate from '$lib/components/AutoTranslate.svelte';
+    import { language } from '$lib/stores.js';
     export let data;
 
-    $: arr = getValidatedColorsArr(data.meta.themeColors);
-    $: rawMain = (arr && arr[0]) || data.meta.themeColor || '#3b82f6';
+    $: currentMeta = ($language === 'en' && data.metaEn) ? data.metaEn : data.metaRo;
+    $: currentContent = ($language === 'en' && data.contentEn) ? data.contentEn : data.contentRo;
+    $: hasManualEn = !!data.contentEn;
+
+    $: arr = getValidatedColorsArr(data.metaRo.themeColors);
+    $: rawMain = (arr && arr[0]) || data.metaRo.themeColor || '#3b82f6';
     $: mainColor = isValidHexColor(rawMain) ? rawMain : '#3b82f6';
 
     $: dynamicStyle = (() => {
@@ -37,21 +43,21 @@
 
 <svelte:head>
     <!-- TITLUL PAGINII ÎN BROWSER -->
-    <title>{data.meta.title} | Gândurile mele</title>
+    <title>{currentMeta.title} | Gândurile mele</title>
 
     <!-- PREVIEW PENTRU DISCORD, WHATSAPP, FACEBOOK, ETC (OPEN GRAPH) -->
     <meta property="og:type" content="article" />
-    <meta property="og:title" content={data.meta.title} />
-    <meta property="og:description" content={data.meta.description || 'Explorează acest gând din arhiva mea personală.'} />
+    <meta property="og:title" content={currentMeta.title} />
+    <meta property="og:description" content={currentMeta.description || 'Explorează acest gând din arhiva mea personală.'} />
     <!-- Foarte important: Linkul imaginii trebuie să fie absolut pt Social Media -->
-    <meta property="og:image" content={`${SITE_URL}${data.meta.backgroundImage}`} />
+    <meta property="og:image" content={`${SITE_URL}${data.metaRo.backgroundImage}`} />
     <meta property="og:url" content={$page.url.href} />
 
     <!-- PREVIEW PENTRU X / TWITTER -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={data.meta.title} />
-    <meta name="twitter:description" content={data.meta.description || 'Explorează acest gând din arhiva mea personală.'} />
-    <meta name="twitter:image" content={`${SITE_URL}${data.meta.backgroundImage}`} />
+    <meta name="twitter:title" content={currentMeta.title} />
+    <meta name="twitter:description" content={currentMeta.description || 'Explorează acest gând din arhiva mea personală.'} />
+    <meta name="twitter:image" content={`${SITE_URL}${data.metaRo.backgroundImage}`} />
 
     <!-- Injectăm CSS-ul care ține variabila fluidă în viață -->
     {#if dynamicStyle}
@@ -62,16 +68,27 @@
 <div class="post-container {arr && arr.length > 1 ? 'post-animated-colors' : ''}" 
      style="--accent-color: {arr && arr.length > 1 ? 'var(--anim-color, ' + mainColor + ')' : mainColor};">
      
-    <div class="post-banner" style="--bg-image: url('{data.meta.backgroundImage}');"></div>
+    <div class="post-banner" style="--bg-image: url('{data.metaRo.backgroundImage}');">
+        <button class="banner-lang-btn" 
+                on:click={() => language.set($language === 'ro' ? 'en' : 'ro')}
+                title={$language === 'ro' ? 'Translate to English' : 'Tradu în Română'}>
+            <span class="lang-code">{$language.toUpperCase()}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </button>
+    </div>
 
     <article class="post-content">
-        <h1>{data.meta.title}</h1>
+        <h1 class="translate-title">{currentMeta.title}</h1>
         <div class="divider"></div>
         <div class="post-text">
-            <svelte:component this={data.content} />
+            <svelte:component this={currentContent} />
         </div>
     </article>
 </div>
+
+{#if !hasManualEn}
+    <AutoTranslate containerSelector=".post-content" />
+{/if}
 
 <style>
     .post-container {
@@ -98,6 +115,39 @@
         margin-bottom: 2.5rem;
         margin-top: 2rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .banner-lang-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-family: 'Roboto', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        z-index: 20;
+    }
+
+    .banner-lang-btn:hover {
+        background: var(--accent-color);
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .banner-lang-btn .lang-code {
+        letter-spacing: 0.05em;
     }
 
     .post-content {
